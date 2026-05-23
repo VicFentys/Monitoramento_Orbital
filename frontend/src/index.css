@@ -1,0 +1,95 @@
+:root {
+  /* Cores de Fundo */
+  --bg-dark: #040407;
+  --bg-panel: rgba(6, 6, 11, 0.75);
+  --bg-panel-solid: #08080f;
+  --border-color: rgba(0, 240, 255, 0.15);
+  --border-color-glow: rgba(0, 240, 255, 0.4);
+
+  /* Paleta Neon HUD */
+  --neon-cyan: #00f0ff;
+  --neon-green: #00ff66;
+  --neon-pink: #ff007f;
+  --neon-red: #ff3333;
+  --neon-yellow: #ffcc00;
+  --neon-gray: #6b7280;
+
+  /* Fontes e Texto */
+  --text-light: #f3f4f6;
+  --text-muted: #9ca3af;
+  --sans-font: 'Inter', sans-serif;
+  --mono-font: 'Space Mono', monospace;
+
+  /* Efeitos e Glows */
+  --glow-cyan: 0 0 12px rgba(0, 240, 255, 0.35);
+  --glow-green: 0 0 12px rgba(0, 255, 102, 0.35);
+  --glow-red: 0 0 12px rgba(255, 51, 51, 0.35);
+  --glass-blur: blur(12px);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body, html {
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-dark);
+  font-family: var(--sans-font);
+  color: var(--text-light);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbar Customizado Tático */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(4, 4, 7, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.3);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+/* Transição suave do Cesium */
+.cesium-viewer {
+  font-family: var(--sans-font);
+}
+
+/* Ocultar a barra de créditos do Cesium para fidelidade estética do HUD */
+.cesium-viewer-bottom {
+  display: none !important;
+}
+
+/* Estilos de Botão Tático HUD */
+button {
+  cursor: pointer;
+  font-family: var(--mono-font);
+  transition: all 0.2s ease-in-out;
+}
+
+button:focus {
+  outline: none;
+}
