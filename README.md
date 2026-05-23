@@ -74,8 +74,8 @@ Com toda a infraestrutura dockerizada, subir o ecossistema completo do **Orbital
 
 1. **Clonar o Repositório:**
    ```bash
-   git clone https://github.com/seu-usuario/OrbitalED.git
-   cd OrbitalED
+   git clone https://github.com/VicFentys/Monitoramento_Orbital.git
+   cd Monitoramento_Orbital
    ```
 
 2. **Subir os Contêineres Docker:**
