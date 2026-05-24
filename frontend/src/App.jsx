@@ -17,8 +17,8 @@ import {
 import * as satellite from 'satellite.js';
 import './App.css';
 
-// Configuração do host da API (aponta para o backend local mapeado)
-const API_URL = 'http://localhost:8000';
+// Configuração do host da API (aponta para o backend de produção na nuvem ou local de fallback)
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // Helper de segurança para prevenir vulnerabilidades de Cross-Site Scripting (XSS)
 const escaparHTML = (str) => {
