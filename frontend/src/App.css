@@ -222,11 +222,13 @@
 
 /* Cabeçalho do Painel HUD */
 .panel-header {
-  padding: 16px 20px;
+  padding: 14px 18px;
   border-bottom: 1px solid rgba(0, 240, 255, 0.1);
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .panel-header-icon {
@@ -245,12 +247,12 @@
 }
 
 .panel-content {
-  padding: 20px;
+  padding: 18px 20px;
   overflow-y: auto;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Reduzido de 20px para 15px para otimizar espaço vertical */
+  gap: 14px;
 }
 
 /* ==========================================
@@ -261,10 +263,23 @@
 .stat-card {
   border: 1px solid rgba(0, 240, 255, 0.1);
   background: rgba(0, 240, 255, 0.02);
-  padding: 16px;
+  padding: 14px 16px;
   border-radius: 4px;
   position: relative;
   overflow: hidden;
+}
+
+.stat-sublabel {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  border-top: 1px dashed rgba(0, 240, 255, 0.15);
+  padding-top: 6px;
+}
+
+.stat-sublabel strong {
+  color: var(--neon-cyan);
 }
 
 .stat-card::before {
@@ -410,6 +425,155 @@
   box-shadow: var(--glow-cyan);
   border-radius: 2px;
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* Transição suave e ultra-fluida de movimento da barra! */
+}
+
+/* ==========================================
+   DISTRIBUIÇÃO POR REGIME ORBITAL (PAINEL ESQUERDO)
+   ========================================== */
+.regimes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+
+.regimes-title {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  letter-spacing: 1px;
+}
+
+.regimes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.regime-bar-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.regime-bar-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono-font);
+  font-size: 9px;
+}
+
+.regime-name {
+  color: var(--text-muted);
+}
+
+.regime-tag {
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-size: 8.5px;
+}
+
+.regime-tag.leo {
+  color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.1);
+}
+
+.regime-tag.meo {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.regime-tag.geo {
+  color: #818cf8;
+  background: rgba(129, 140, 248, 0.1);
+}
+
+.regime-progress-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.regime-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.regime-progress-fill.leo {
+  background: var(--neon-cyan);
+  box-shadow: 0 0 6px var(--neon-cyan);
+}
+
+.regime-progress-fill.meo {
+  background: #38bdf8;
+  box-shadow: 0 0 6px #38bdf8;
+}
+
+.regime-progress-fill.geo {
+  background: #818cf8;
+  box-shadow: 0 0 6px #818cf8;
+}
+
+/* TELEMETRIA DA FROTA */
+.fleet-telemetry-section {
+  background: rgba(0, 240, 255, 0.02);
+  border: 1px dashed rgba(0, 240, 255, 0.18);
+  border-radius: 4px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fleet-telemetry-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  letter-spacing: 0.5px;
+}
+
+.fleet-metrics-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.fleet-mini-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fleet-metric-label {
+  font-family: var(--mono-font);
+  font-size: 8px;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.fleet-metric-val {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.fleet-metric-val small {
+  font-size: 8.5px;
+  color: var(--text-muted);
 }
 
 /* ==========================================
@@ -780,71 +944,147 @@
 }
 
 /* ==========================================
-   TLE ACCORDION (SANFONA TÉCNICA)
+   TELEMETRIA & DIAGNÓSTICO ORBITAL DIDÁTICO
    ========================================== */
-.tle-accordion {
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(255, 255, 255, 0.01);
-  border-radius: 4px;
-  overflow: hidden;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.tle-accordion:hover {
-  border-color: rgba(0, 240, 255, 0.15);
-  background: rgba(0, 240, 255, 0.01);
-}
-
-.tle-accordion.open {
-  border-color: rgba(0, 240, 255, 0.3);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.05);
-}
-
-.tle-accordion-header {
-  width: 100%;
-  background: transparent;
-  border: none;
-  padding: 10px 14px;
+.telemetry-dashboard-card {
+  background: rgba(0, 240, 255, 0.02);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 6px;
+  padding: 12px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  outline: none;
-  color: #fff;
-  transition: background-color 0.2s;
+  flex-direction: column;
+  gap: 10px;
 }
 
-.tle-accordion-header:hover {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.accordion-title {
+.telemetry-card-title {
   display: flex;
   align-items: center;
   gap: 8px;
   font-family: var(--mono-font);
-  font-size: 11px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+  padding-bottom: 6px;
+}
+
+.telemetry-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.telemetry-metric-box {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+}
+
+.telemetry-metric-box.highlight-metric {
+  border-color: rgba(0, 240, 255, 0.3);
+  background: rgba(0, 240, 255, 0.04);
+}
+
+.metric-box-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.metric-box-label {
+  font-family: var(--mono-font);
+  font-size: 8px;
   color: var(--text-muted);
-  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.tle-accordion.open .accordion-title {
-  color: var(--neon-cyan);
+.metric-box-val {
+  font-family: var(--mono-font);
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
 }
 
-.arrow-icon {
+.metric-box-val.compact-val {
+  font-size: 11px;
+  letter-spacing: -0.2px;
+}
+
+.highlight-metric .metric-box-val {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 6px rgba(0, 240, 255, 0.4);
+}
+
+.metric-box-tag {
+  position: static;
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--neon-cyan);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  font-family: var(--mono-font);
+  font-size: 8px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 2px;
+  line-height: 1.2;
+}
+
+.metric-box-sub {
+  font-family: var(--mono-font);
+  font-size: 8.5px;
   color: var(--text-muted);
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.tle-accordion.open .arrow-icon {
-  transform: rotate(90deg);
+.telemetry-detail-row {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.telemetry-detail-row.environmental-row {
+  border-color: rgba(255, 120, 0, 0.25);
+  background: rgba(255, 120, 0, 0.02);
+}
+
+.detail-row-title {
+  font-family: var(--mono-font);
+  font-size: 9px;
+  font-weight: 700;
   color: var(--neon-cyan);
+  letter-spacing: 0.5px;
+}
+
+.environmental-row .detail-row-title {
+  color: #ff9900;
+}
+
+.detail-row-desc {
+  font-family: var(--sans-font);
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.detail-row-desc strong {
+  color: #fff;
 }
 
 /* ==========================================
-   TELA DE BOOT INICIAL (WELCOME SCREEN)
+   TELA CINEMATOGRÁFICA AEROESPACIAL (WELCOME SCREEN)
+   Design System inspirado em EDOLUS Planetary Scale e Visor Tático
    ========================================== */
 .welcome-screen {
   position: absolute;
@@ -853,745 +1093,1434 @@
   width: 100vw;
   height: 100vh;
   z-index: 1000;
-  background: radial-gradient(circle at center, rgba(6, 12, 24, 0.94) 0%, rgba(2, 4, 8, 0.98) 100%);
-  overflow: hidden; /* Remove barras de rolagem nativas */
+  /* Transparência e vinheta suave para que o globo 3D (Cesium) seja protagonista */
+  background: radial-gradient(circle at center, rgba(3, 7, 18, 0.45) 0%, rgba(1, 3, 10, 0.72) 100%);
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  backdrop-filter: blur(12px);
+  pointer-events: auto;
 }
 
-/* Showcase de Planeta Flutuante Didático */
-.welcome-planet-showcase {
-  position: relative;
-  width: 90px;
-  height: 90px;
-  margin-bottom: 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.planet-icon-glow {
-  position: relative;
-  width: 72px;
-  height: 72px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--neon-cyan);
-  filter: drop-shadow(0 0 18px rgba(0, 240, 255, 0.45));
-  animation: floatMajestic 4s ease-in-out infinite alternate;
-  will-change: transform;
-}
-
-.planet-float-icon {
-  width: 72px;
-  height: 72px;
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-}
-
-/* Linha de Scanner de Radar Neon */
-.planet-scanner-line {
-  position: absolute;
-  left: -15px;
-  width: 120px;
-  height: 1.5px;
-  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-  box-shadow: 0 0 10px var(--neon-cyan);
-  opacity: 0.7;
-  pointer-events: none;
-  animation: scanlineMovement 2.5s ease-in-out infinite alternate;
-}
-
-@keyframes floatMajestic {
-  0% {
-    transform: translate3d(0, 8px, 0);
-  }
-  100% {
-    transform: translate3d(0, -8px, 0);
-  }
-}
-
-@keyframes scanlineMovement {
-  0% {
-    top: 5px;
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 0.9;
-  }
-  100% {
-    top: 85px;
-    opacity: 0.2;
-  }
-}
-
-/* BARRA DE NAVEGAÇÃO FIXA NO TOPO LADO A LADO */
-.welcome-navbar {
+/* ==========================================
+   NAVBAR HORIZONTAL SUPERIOR (FOTO 3 - MOONSWORTH)
+   ========================================== */
+.cinema-navbar {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 75px;
+  height: 72px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 40px;
+  padding: 0 44px;
   box-sizing: border-box;
-  background: rgba(6, 12, 24, 0.55);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(0, 240, 255, 0.08);
-  z-index: 1005;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  background: rgba(3, 7, 18, 0.65);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 1010;
 }
 
-.welcome-brand {
+.cinema-brand {
+  display: flex;
+  align-items: center;
   font-family: var(--mono-font);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 800;
-  letter-spacing: 2px;
-  color: #fff;
-  text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-  margin: 0;
+  letter-spacing: 2.5px;
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+  user-select: none;
 }
 
-.welcome-brand span {
+.cinema-brand span {
   color: var(--neon-cyan);
   text-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
 }
 
-/* BOTÃO SUPERIOR EM FORMATO DE ABA DE NAV */
-.welcome-action-btn {
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(0, 240, 255, 0.3));
-  border: 1px solid var(--neon-cyan);
-  color: #fff;
+.cinema-nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  pointer-events: auto;
+}
+
+.cinema-nav-link {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.58);
   font-family: var(--mono-font);
-  font-size: 13px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 1.8px;
+  padding: 8px 0;
+  cursor: pointer;
+  position: relative;
+  text-transform: uppercase;
+  transition: color 0.25s ease;
+  outline: none;
+}
+
+.cinema-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--neon-cyan);
+  box-shadow: 0 0 8px var(--neon-cyan);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateX(-50%);
+}
+
+.cinema-nav-link:hover {
+  color: #ffffff;
+}
+
+.cinema-nav-link:hover::after {
+  width: 100%;
+}
+
+.cinema-nav-link.active {
+  color: #ffffff;
   font-weight: 700;
-  padding: 10px 26px;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+}
+
+.cinema-nav-link.active::after {
+  width: 100%;
+  background: var(--neon-cyan);
+  box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.cinema-nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.cinema-action-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  color: #ffffff;
+  font-family: var(--mono-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 10px 22px;
   border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+  backdrop-filter: blur(8px);
+  outline: none;
+}
+
+.cinema-action-btn:hover {
+  background: rgba(0, 240, 255, 0.18);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Botão Ícone de Planeta Holográfico (Substitui botão de texto no topo direito) */
+.cinema-planet-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(4, 18, 36, 0.65);
+  border: 1px solid rgba(0, 240, 255, 0.45);
+  color: var(--neon-cyan);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  box-shadow: var(--glow-cyan);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.22), inset 0 0 14px rgba(0, 240, 255, 0.1);
+  backdrop-filter: blur(10px);
+  outline: none;
 }
 
-.welcome-action-btn:hover {
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.35), rgba(0, 240, 255, 0.55));
-  border-color: #fff;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
-  color: #fff;
-  transform: translateY(-1.5px);
+.cinema-planet-btn:hover {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: #00f0ff;
+  color: #ffffff;
+  box-shadow: 0 0 28px rgba(0, 240, 255, 0.75), inset 0 0 18px rgba(0, 240, 255, 0.3);
+  transform: scale(1.12);
 }
 
-.welcome-action-btn:active {
-  transform: translateY(0px);
+.cinema-planet-btn:active {
+  transform: scale(0.96);
 }
 
-/* CONTÊINER PRINCIPAL DE SLIDES ESTÁTICOS */
-.welcome-slide-container {
+.cinema-planet-icon {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cinema-planet-btn:hover .cinema-planet-icon {
+  transform: rotate(25deg);
+}
+
+.planet-btn-halo {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 240, 255, 0.35);
+  pointer-events: none;
+  animation: planetHaloSpin 14s linear infinite;
+  opacity: 0.75;
+}
+
+.cinema-planet-btn:hover .planet-btn-halo {
+  opacity: 1;
+  border-color: rgba(0, 240, 255, 0.9);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+@keyframes planetHaloSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==========================================
+   SETAS LATERAIS MINIMALISTAS DIGITAIS (PASSAR SEÇÃO)
+   Sem círculo, maiores, sem movimento vertical e com efeito de crescimento no hover
+   ========================================== */
+.cinema-side-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 10px;
+  color: rgba(0, 240, 255, 0.78);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              color 0.25s ease,
+              filter 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1008;
+  outline: none;
+  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
+}
+
+.cinema-side-nav.prev {
+  left: 24px;
+}
+
+.cinema-side-nav.next {
+  right: 24px;
+}
+
+.cinema-side-nav:hover {
+  color: #ffffff;
+  transform: translateY(-50%) scale(1.25);
+  filter: drop-shadow(0 0 18px rgba(0, 240, 255, 0.95)) drop-shadow(0 0 35px rgba(0, 240, 255, 0.6));
+}
+
+.cinema-side-nav:active {
+  transform: translateY(-50%) scale(1.05);
+}
+
+/* ==========================================
+   SEÇÃO 0: HERO CINEMATOGRÁFICO ABERTO (FOTO 1 - EDOLUS)
+   ========================================== */
+.cinema-hero-view {
   position: relative;
   width: 100%;
-  height: calc(100vh - 120px);
-  max-width: 800px;
+  height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 40px;
+  box-sizing: border-box;
   z-index: 1002;
-  margin-top: 50px; /* Dá espaço para a navbar */
-}
-
-/* SEÇÃO / SLIDE ESTÁTICO INDEPENDENTE */
-.welcome-slide {
-  position: absolute;
-  width: 100%;
-  max-width: 800px;
-  opacity: 0;
-  pointer-events: none;
-  transform: translate3d(0, 30px, 0) scale(0.96);
-  filter: blur(5px);
-  transition: opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1), 
-              transform 0.7s cubic-bezier(0.25, 1, 0.5, 1), 
-              filter 0.7s cubic-bezier(0.25, 1, 0.5, 1);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* SLIDE ATIVO */
-.welcome-slide.active {
-  opacity: 1;
   pointer-events: auto;
-  transform: translate3d(0, 0, 0) scale(1);
-  filter: blur(0);
-  z-index: 10;
+  animation: cinemaFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* SLIDE INATIVO ANTERIOR (FOI PARA CIMA) */
-.welcome-slide.inactive-prev {
-  opacity: 0;
+/* Transição fluida de saída da Visão Geral ao navegar para qualquer visor */
+.cinema-hero-view.fade-out-hero {
+  position: absolute;
+  inset: 0;
   pointer-events: none;
-  transform: translate3d(0, -30px, 0) scale(0.96);
-  filter: blur(5px);
-  z-index: 1;
+  z-index: 1001;
+  animation: cinemaFadeOut 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
-/* SLIDE INATIVO POSTERIOR (ESTÁ EMBAIXO) */
-.welcome-slide.inactive-next {
-  opacity: 0;
-  pointer-events: none;
-  transform: translate3d(0, 30px, 0) scale(0.96);
-  filter: blur(5px);
-  z-index: 1;
-}
-
-/* Painel de Texto de Introdução Didática */
-.welcome-article {
-  background: var(--bg-panel);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  padding: 35px 40px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  text-align: center;
-  line-height: 1.7;
-  color: var(--text-light);
-  align-items: center;
-}
-
-.welcome-article h2 {
-  font-family: var(--mono-font);
-  font-size: 22px;
-  color: #fff;
-  margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-}
-
-.welcome-article h3 {
-  font-family: var(--mono-font);
-  font-size: 15px;
-  color: var(--neon-cyan);
-  margin: 5px 0 0 0;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
-}
-
-.welcome-intro-text, .welcome-objective-text {
-  font-family: var(--sans-font);
-  font-size: 13.5px;
-  margin: 0;
-  color: var(--text-muted);
-  max-width: 720px;
-  line-height: 1.7;
-}
-
-.welcome-article strong {
-  color: #fff;
-}
-
-/* Divisor digital tático */
-.welcome-divider-line {
-  width: 100%;
-  max-width: 600px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(0, 240, 255, 0.3) 50%, transparent 100%);
-  margin: 10px 0;
-}
-
-/* Grid de Cards Didáticos Modernos */
-.welcome-features-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  width: 100%;
-  margin-top: 10px;
-}
-
-@media (max-width: 768px) {
-  .welcome-features-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+@keyframes cinemaFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.98) translateY(12px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
   }
 }
 
-.feature-card {
-  background: rgba(255, 255, 255, 0.012);
-  border: 1px solid rgba(0, 240, 255, 0.08);
-  border-radius: 6px;
-  padding: 16px 14px;
+@keyframes cinemaFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.97) translateY(-10px);
+    filter: blur(4px);
+  }
+}
+
+/* Cruzes ópticas discretas nos 4 cantos */
+.cinema-cross {
+  position: absolute;
+  font-family: var(--mono-font);
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+  user-select: none;
+}
+
+.cinema-cross.c-tl {
+  top: 96px;
+  left: 48px;
+}
+
+.cinema-cross.c-tr {
+  top: 96px;
+  right: 48px;
+}
+
+.cinema-cross.c-bl {
+  bottom: 56px;
+  left: 48px;
+}
+
+.cinema-cross.c-br {
+  bottom: 56px;
+  right: 48px;
+}
+
+.cinema-hero-center {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 8px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(4px);
-  position: relative;
+  max-width: 980px;
+  gap: 22px;
 }
 
-.feature-card::before {
+.cinema-hero-title {
+  font-family: var(--mono-font);
+  font-size: clamp(30px, 4.8vw, 58px);
+  font-weight: 800;
+  letter-spacing: 4px;
+  line-height: 1.15;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin: 0;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.9), 0 0 50px rgba(0, 240, 255, 0.18);
+}
+
+.cinema-hero-subtitle {
+  font-family: var(--mono-font);
+  font-size: clamp(10.5px, 1.1vw, 13.5px);
+  letter-spacing: 2px;
+  color: rgba(210, 230, 255, 0.7);
+  max-width: 760px;
+  line-height: 1.7;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.cinema-btn-container {
+  margin-top: 14px;
+}
+
+/* Botão com cantos em colchete tático [ INITIATE SYSTEM ] */
+.cinema-bracket-btn {
+  position: relative;
+  background: rgba(3, 8, 20, 0.55);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  padding: 18px 42px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.bracket-btn-label {
+  position: relative;
+  z-index: 2;
+}
+
+/* Cantos táticos em L [ ] brancos */
+.bracket-mark {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bracket-mark.b-tl {
+  top: -4px;
+  left: -4px;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+}
+
+.bracket-mark.b-tr {
+  top: -4px;
+  right: -4px;
+  border-top: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+}
+
+.bracket-mark.b-bl {
+  bottom: -4px;
+  left: -4px;
+  border-bottom: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+}
+
+.bracket-mark.b-br {
+  bottom: -4px;
+  right: -4px;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px solid #ffffff;
+}
+
+.cinema-bracket-btn:hover {
+  background: rgba(0, 240, 255, 0.14);
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.35);
+  transform: scale(1.02);
+}
+
+.cinema-bracket-btn:hover .bracket-mark {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 8px var(--neon-cyan);
+  transform: scale(1.15);
+}
+
+.cinema-hero-footer {
+  position: absolute;
+  bottom: 28px;
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.38);
+  text-transform: uppercase;
+}
+
+/* ==========================================
+   SEÇÕES 1, 2 e 3: VISOR TÁTICO HUD ABERTO (FOTO 2 - EDOLUS)
+   Moldura tática vazada com cantos em L, marcas de cruz + e título com prefixo +
+   ========================================== */
+.cinema-tactical-view {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 85px 40px 30px;
+  box-sizing: border-box;
+  z-index: 1002;
+  pointer-events: auto;
+}
+
+/* Quando estiver em transição de fechamento de volta para a Visão Geral */
+.cinema-tactical-view.fechando {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1004;
+}
+
+.tactical-visor-frame {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  min-height: 320px;
+  background: rgba(3, 10, 22, 0.65);
+  backdrop-filter: blur(20px);
+  border-top: none !important;
+  border-bottom: none !important;
+  border-left: 5px solid var(--neon-cyan) !important;
+  border-right: 5px solid var(--neon-cyan) !important;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  box-shadow: -10px 0 28px rgba(0, 240, 255, 0.22),
+              10px 0 28px rgba(0, 240, 255, 0.22),
+              0 20px 60px rgba(0, 0, 0, 0.75);
+  overflow: hidden;
+  transform-origin: center center;
+  transition: height 0.48s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s ease;
+  will-change: height, transform;
+}
+
+/* ==========================================
+   ANIMAÇÃO HOLOGRÁFICA: ABERTURA DO CENTRO (VISÃO GERAL -> DIFERENCIAIS)
+   ========================================== */
+.tactical-visor-frame.anim-abertura-centro {
+  animation: holoPlateOpenCenter 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: center center;
+}
+
+/* Feixe laser vertical no centro no momento da expansão da placa */
+.tactical-visor-frame.anim-abertura-centro::after {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 0 0 16px var(--neon-cyan), 0 0 32px var(--neon-cyan);
+  pointer-events: none;
+  z-index: 25;
+  animation: holoCenterLaser 0.52s ease-out forwards;
+}
+
+@keyframes holoCenterLaser {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(0.2);
+  }
+  25% {
+    opacity: 1;
+    transform: translateX(-50%) scaleY(1);
+  }
+  70% {
+    opacity: 0.7;
+    transform: translateX(-50%) scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(1);
+  }
+}
+
+@keyframes holoPlateOpenCenter {
+  0% {
+    transform: scaleX(0.002) scaleY(1);
+    opacity: 0.2;
+    filter: brightness(2.6);
+    box-shadow: 0 0 45px var(--neon-cyan), 0 0 90px rgba(0, 240, 255, 0.85);
+  }
+  20% {
+    transform: scaleX(0.005) scaleY(1);
+    opacity: 0.95;
+    filter: brightness(2.2);
+    box-shadow: 0 0 40px var(--neon-cyan), 0 0 75px rgba(0, 240, 255, 0.7);
+  }
+  60% {
+    transform: scaleX(0.72) scaleY(1);
+    opacity: 1;
+    filter: brightness(1.25);
+    box-shadow: -15px 0 32px rgba(0, 240, 255, 0.4),
+                15px 0 32px rgba(0, 240, 255, 0.4),
+                0 20px 60px rgba(0, 0, 0, 0.75);
+  }
+  100% {
+    transform: scaleX(1) scaleY(1);
+    opacity: 1;
+    filter: brightness(1);
+    box-shadow: -10px 0 28px rgba(0, 240, 255, 0.22),
+                10px 0 28px rgba(0, 240, 255, 0.22),
+                0 20px 60px rgba(0, 0, 0, 0.75);
+  }
+}
+
+/* ==========================================
+   ANIMAÇÃO HOLOGRÁFICA: FECHAMENTO PARA O CENTRO (DIFERENCIAIS -> VISÃO GERAL)
+   ========================================== */
+.tactical-visor-frame.anim-fechamento-centro {
+  animation: holoPlateCloseCenter 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: center center;
+  pointer-events: none;
+}
+
+@keyframes holoPlateCloseCenter {
+  0% {
+    transform: scaleX(1) scaleY(1);
+    opacity: 1;
+    filter: brightness(1);
+    box-shadow: -10px 0 28px rgba(0, 240, 255, 0.22),
+                10px 0 28px rgba(0, 240, 255, 0.22),
+                0 20px 60px rgba(0, 0, 0, 0.75);
+  }
+  40% {
+    transform: scaleX(0.68) scaleY(1);
+    opacity: 0.95;
+    filter: brightness(1.3);
+    box-shadow: -15px 0 32px rgba(0, 240, 255, 0.4),
+                15px 0 32px rgba(0, 240, 255, 0.4),
+                0 20px 60px rgba(0, 0, 0, 0.75);
+  }
+  80% {
+    transform: scaleX(0.005) scaleY(1);
+    opacity: 0.95;
+    filter: brightness(2.2);
+    box-shadow: 0 0 40px var(--neon-cyan), 0 0 75px rgba(0, 240, 255, 0.7);
+  }
+  100% {
+    transform: scaleX(0.002) scaleY(1);
+    opacity: 0;
+    filter: brightness(2.6);
+    box-shadow: 0 0 45px var(--neon-cyan), 0 0 90px rgba(0, 240, 255, 0.85);
+  }
+}
+
+/* Feixe laser no momento em que as bordas se encontram no centro */
+.tactical-visor-frame.anim-fechamento-centro::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 0 0 16px var(--neon-cyan), 0 0 32px var(--neon-cyan);
+  pointer-events: none;
+  z-index: 25;
+  animation: holoCloseCenterLaser 0.52s ease-out forwards;
+}
+
+@keyframes holoCloseCenterLaser {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(1);
+  }
+  40% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 1;
+    transform: translateX(-50%) scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scaleY(0.3);
+  }
+}
+
+/* Revelação e desaparecimento suave do conteúdo interno */
+.tactical-visor-frame.anim-abertura-centro .tactical-visor-inner {
+  animation: holoContentReveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+}
+
+.tactical-visor-frame.anim-fechamento-centro .tactical-visor-inner {
+  animation: holoContentFadeOut 0.24s ease-out forwards;
+}
+
+@keyframes holoContentReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes holoContentFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.97) translateY(4px);
+    filter: blur(4px);
+  }
+}
+
+/* Invólucro interno do visor (comporta padding e medição precisa de altura) */
+.tactical-visor-inner {
   width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 28px 42px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
-.feature-card:hover {
-  transform: translateY(-4px);
-  background: rgba(0, 240, 255, 0.02);
-  border-color: rgba(0, 240, 255, 0.35);
-  box-shadow: 0 10px 20px rgba(0, 240, 255, 0.08), 0 0 15px rgba(0, 240, 255, 0.05);
-}
-
-.feature-card:hover::before {
-  opacity: 1;
-}
-
-.feature-icon-wrapper {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(0, 240, 255, 0.04);
-  border: 1px solid rgba(0, 240, 255, 0.15);
+/* Cabeçalho Limpo com Título Centralizado */
+.tactical-visor-header {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--neon-cyan);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.05);
-  transition: all 0.3s;
+  text-align: center;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
 }
 
-.feature-card:hover .feature-icon-wrapper {
-  color: var(--neon-cyan);
-  background: rgba(0, 240, 255, 0.12); /* Mais escuro e translúcido (menos estourado) */
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.4); /* Brilho neon atenuado e sutil */
-  border-color: var(--neon-cyan);
-  transform: scale(1.05);
-}
-
-.feature-card h4 {
+.tactical-tag-title {
   font-family: var(--mono-font);
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #fff;
-  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 3.5px;
+  color: #ffffff;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  margin: 0;
+  text-align: center;
+  text-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+  animation: titleCrossFade 0.35s ease both;
 }
 
-.feature-card p {
+@keyframes titleCrossFade {
+  0% {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Corpo do Visor Tático */
+.tactical-visor-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  margin: 0;
+  padding: 4px 8px 8px 8px;
+  min-height: 0;
+  animation: slideBodyFadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Evita que apareça scrollbar temporário durante a animação de altura entre seções */
+.tactical-visor-body.em-transicao {
+  overflow-y: hidden !important;
+}
+
+@keyframes slideBodyFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tactical-visor-body::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tactical-visor-body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.tactical-visor-body::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.25);
+  border-radius: 2px;
+}
+
+/* ==========================================
+   CONTEÚDO DA SEÇÃO 1: RECURSOS TECNOLÓGICOS DO SISTEMA
+   Cartões enriquecidos + Cartão Full-Width de Stack Tecnológica
+   ========================================== */
+.tactical-features-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.tactical-features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  padding: 8px 4px 4px 4px;
+}
+
+.tactical-feature-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  backdrop-filter: blur(6px);
+}
+
+.tactical-feature-card:hover {
+  background: rgba(0, 240, 255, 0.04);
+  border-color: rgba(0, 240, 255, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 240, 255, 0.2);
+}
+
+.tactical-feature-title {
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.4;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+  padding-bottom: 10px;
+}
+
+.tactical-feature-card:hover .tactical-feature-title {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.tactical-feature-card p {
+  font-family: var(--sans-font);
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.tactical-feature-specs {
+  list-style: none;
+  margin: 2px 0 0 0;
+  padding: 10px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.09);
+}
+
+.tactical-feature-specs li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
   font-family: var(--sans-font);
   font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.45;
+}
+
+.tactical-feature-specs li strong {
+  color: #ffffff;
+  font-family: var(--mono-font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.spec-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--neon-cyan);
+  margin-top: 5px;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px var(--neon-cyan);
+}
+
+/* CARTÃO FULL-WIDTH: STACK TECNOLÓGICA DO PROJETO */
+.tactical-stack-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 4px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.tactical-stack-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+  padding-bottom: 10px;
+}
+
+.stack-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--neon-cyan);
+}
+
+.stack-icon {
+  color: var(--neon-cyan);
+  filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.6));
+}
+
+.tactical-stack-title {
+  font-family: var(--mono-font);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.35);
+}
+
+.tactical-stack-badge {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 3px;
+  padding: 3px 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.tactical-stack-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.stack-category-pod {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+
+.stack-category-pod:hover {
+  border-color: rgba(0, 240, 255, 0.4);
+  background: rgba(0, 240, 255, 0.02);
+  transform: translateY(-2px);
+}
+
+.pod-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pod-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pod-cyan {
+  background: var(--neon-cyan);
+  box-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.pod-amber {
+  background: #f59e0b;
+  box-shadow: 0 0 8px #f59e0b;
+}
+
+.pod-purple {
+  background: #a855f7;
+  box-shadow: 0 0 8px #a855f7;
+}
+
+.pod-green {
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.pod-title {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.tech-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tech-tag {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.pod-desc {
+  font-family: var(--sans-font);
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 2px 0 0 0;
+}
+
+/* ==========================================
+   CONTEÚDO DA SEÇÃO 2: SUSTENTABILIDADE TÁTICA
+   ========================================== */
+.tactical-sustainability-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.tactical-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.tactical-pillar-card {
+  background: rgba(4, 16, 32, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid rgba(0, 240, 255, 0.4);
+  border-radius: 4px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.25s ease;
+}
+
+.tactical-pillar-card:hover {
+  border-color: rgba(0, 240, 255, 0.45);
+  border-left-color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.04);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  transform: translateY(-1px);
+}
+
+.tactical-pillar-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tactical-pillar-top h4 {
+  font-family: var(--mono-font);
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.pillar-ico-kessler { color: var(--neon-red); }
+.pillar-ico-reentry { color: #ff9900; }
+.pillar-ico-magneto { color: #38bdf8; }
+.pillar-ico-climate { color: var(--neon-cyan); }
+
+.tactical-pillar-card p {
+  font-family: var(--sans-font);
+  font-size: 11px;
   color: var(--text-muted);
   line-height: 1.5;
   margin: 0;
 }
 
-.welcome-quote {
-  margin: 15px 0 0 0;
-  padding: 14px 20px;
-  background: rgba(0, 240, 255, 0.015);
-  border: 1px solid rgba(0, 240, 255, 0.08);
-  border-radius: 4px;
-  font-family: var(--sans-font);
-  font-size: 13px;
-  color: var(--text-light);
-  font-style: italic;
-  line-height: 1.6;
-  max-width: 680px;
-  text-shadow: 0 0 4px rgba(255, 255, 255, 0.05);
-}
-
-/* ==========================================
-   DASHBOARD CRÍTICO DE LIXO ESPACIAL (RF04)
-   ========================================== */
-.welcome-dashboard {
-  background: rgba(255, 0, 85, 0.01);
-  border: 1px solid rgba(255, 0, 85, 0.15);
-  border-radius: 4px;
-  padding: 24px 30px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  text-align: center;
-  align-items: center;
-}
-
-.dashboard-title-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255, 0, 85, 0.25);
-  padding-bottom: 8px;
-  color: var(--neon-red);
-  text-shadow: 0 0 8px rgba(255, 0, 85, 0.4);
-  width: 100%;
-}
-
-.dashboard-title-bar h2 {
+.tactical-stat-tag {
   font-family: var(--mono-font);
-  font-size: 14.5px;
-  margin: 0;
+  font-size: 9px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #fff;
+  color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  padding: 3px 8px;
+  border-radius: 2px;
+  align-self: flex-start;
+  margin-top: auto;
 }
 
-.dashboard-summary {
-  font-family: var(--sans-font);
-  font-size: 13.5px;
-  color: var(--text-muted);
-  line-height: 1.6;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-}
-
-.dashboard-summary p {
-  margin: 0;
-  max-width: 720px;
-}
-
-.dashboard-meta {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: var(--mono-font);
-  font-size: 10.5px;
-  background: rgba(255, 0, 85, 0.03);
-  padding: 8px 24px;
+/* Tabela de Responsabilidade Geopolítica */
+.tactical-table-box {
+  background: rgba(3, 12, 26, 0.65);
+  border: 1px solid rgba(0, 240, 255, 0.22);
   border-radius: 4px;
-  border: 1px solid rgba(255, 0, 85, 0.08);
-  color: var(--text-light);
-  gap: 24px;
-  width: auto;
-  max-width: 100%;
-}
-
-@media (max-width: 600px) {
-  .dashboard-meta {
-    flex-direction: column;
-    gap: 8px;
-    padding: 10px 16px;
-  }
-  .meta-divider {
-    display: none;
-  }
-}
-
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.meta-label {
-  color: var(--text-muted);
-}
-
-.meta-value {
-  color: var(--neon-red);
-  font-weight: 700;
-  text-shadow: 0 0 6px rgba(255, 0, 85, 0.4);
-}
-
-.meta-divider {
-  width: 1px;
-  height: 12px;
-  background-color: rgba(255, 0, 85, 0.2);
-}
-
-/* Tabela de Lixo Espacial */
-.dashboard-table-container {
-  width: 100%;
   overflow-x: auto;
-  margin-top: 5px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
 }
 
-.welcome-table {
+.tactical-table-header {
+  padding: 10px 16px;
+  background: linear-gradient(90deg, rgba(0, 240, 255, 0.12) 0%, rgba(3, 14, 28, 0.7) 100%);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--mono-font);
+}
+
+.tactical-table-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--neon-cyan);
+  letter-spacing: 1.2px;
+}
+
+.tactical-table-icon {
+  color: #f59e0b;
+}
+
+.tactical-table-source {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.tactical-table {
   width: 100%;
   border-collapse: collapse;
   font-family: var(--mono-font);
   font-size: 11.5px;
   text-align: center;
-  color: var(--text-muted);
 }
 
-.welcome-table th {
-  padding: 10px 12px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
+.tactical-table th {
+  padding: 10px 16px;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.18);
+  background: rgba(0, 240, 255, 0.04);
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-size: 10.5px;
+  font-size: 10px;
+  letter-spacing: 1px;
 }
 
-.welcome-table td {
-  padding: 10px 12px;
+.tactical-table th.th-nation {
+  text-align: left;
+}
+
+.tactical-table th.th-debris {
+  color: #ff5577;
+}
+
+.tactical-table th.th-active {
+  color: #38bdf8;
+}
+
+.tactical-table td {
+  padding: 10px 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  transition: background-color 0.2s;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
 }
 
-.welcome-table tr:hover td {
-  background-color: rgba(255, 255, 255, 0.02);
+.tactical-table tbody tr {
+  transition: all 0.2s ease;
 }
 
-.nation-cell {
-  color: #fff;
-  font-weight: bold;
+.tactical-table tbody tr:hover {
+  background: rgba(0, 240, 255, 0.07);
 }
 
-.count-cell {
-  color: var(--text-light);
+.tactical-table tbody tr:hover td {
+  color: #ffffff;
 }
 
-.percent-cell {
-  color: var(--neon-cyan);
+.tactical-table .nation-cell {
+  text-align: left;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
+.nation-flag {
+  font-size: 15px;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
+}
+
+/* Cores vibrantes para os números da tabela */
+.cell-num-debris {
+  color: #ff2d60 !important;
+  font-weight: 700;
+  font-size: 12.5px;
+  text-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+}
+
+.cell-num-inactive {
+  color: #fbbf24 !important;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.cell-num-active {
+  color: #38bdf8 !important;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.cell-num-highlight {
+  color: #00f0ff !important;
+  font-weight: 800;
+  font-size: 13px;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.65);
+}
+
+.cell-num-zero {
+  color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Badges de Risco com Cores Vivas e Ponto Pulsante */
 .risk-badge {
-  display: inline-block;
-  padding: 3px 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 4px 12px;
   border-radius: 3px;
-  font-size: 9.5px;
-  font-weight: bold;
-  border: 1px solid;
+  font-family: var(--mono-font);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.risk-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  animation: riskDotPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes riskDotPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
 }
 
 .risk-badge.risk-extreme {
-  background: rgba(255, 0, 85, 0.12);
-  color: var(--neon-red);
-  border-color: rgba(255, 0, 85, 0.4);
-  text-shadow: 0 0 4px rgba(255, 0, 85, 0.6);
+  background: rgba(255, 0, 85, 0.22);
+  border: 1px solid #ff0055;
+  color: #ff4d79;
+  text-shadow: 0 0 8px rgba(255, 0, 85, 0.7);
+  box-shadow: 0 0 14px rgba(255, 0, 85, 0.35);
+}
+
+.risk-badge.risk-extreme .risk-dot {
+  background: #ff0055;
+  box-shadow: 0 0 8px #ff0055;
 }
 
 .risk-badge.risk-critical {
-  background: rgba(255, 120, 0, 0.12);
-  color: #ff7800;
-  border-color: rgba(255, 120, 0, 0.4);
+  background: rgba(255, 153, 0, 0.22);
+  border: 1px solid #ff9900;
+  color: #ffaa22;
+  text-shadow: 0 0 8px rgba(255, 153, 0, 0.7);
+  box-shadow: 0 0 14px rgba(255, 153, 0, 0.35);
+}
+
+.risk-badge.risk-critical .risk-dot {
+  background: #ff9900;
+  box-shadow: 0 0 8px #ff9900;
 }
 
 .risk-badge.risk-moderate {
-  background: rgba(255, 210, 0, 0.12);
-  color: #ffd200;
-  border-color: rgba(255, 210, 0, 0.4);
+  background: rgba(250, 204, 21, 0.2);
+  border: 1px solid #facc15;
+  color: #fde047;
+  text-shadow: 0 0 8px rgba(250, 204, 21, 0.6);
+  box-shadow: 0 0 12px rgba(250, 204, 21, 0.3);
+}
+
+.risk-badge.risk-moderate .risk-dot {
+  background: #facc15;
+  box-shadow: 0 0 8px #facc15;
+}
+
+.risk-badge.risk-controlled {
+  background: rgba(0, 240, 255, 0.18);
+  border: 1px solid #00f0ff;
+  color: #38bdf8;
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+
+.risk-badge.risk-controlled .risk-dot {
+  background: #00f0ff;
+  box-shadow: 0 0 8px #00f0ff;
 }
 
 .risk-badge.risk-low {
-  background: rgba(0, 255, 102, 0.12);
-  color: var(--neon-green);
-  border-color: rgba(0, 255, 102, 0.4);
+  background: rgba(0, 255, 102, 0.18);
+  border: 1px solid #00ff66;
+  color: #4ade80;
+  text-shadow: 0 0 8px rgba(0, 255, 102, 0.6);
+  box-shadow: 0 0 12px rgba(0, 255, 102, 0.3);
 }
 
-/* DOTS DE NAVEGAÇÃO LATERAL CIBERNÉTICA */
-.welcome-dots-indicator {
-  position: absolute;
-  right: 40px;
-  top: 50%;
-  transform: translateY(-50%);
+.risk-badge.risk-low .risk-dot {
+  background: #00ff66;
+  box-shadow: 0 0 8px #00ff66;
+}
+
+/* ==========================================
+   CONTEÚDO DA SEÇÃO 3: GLOSSÁRIO TÁTICO
+   ========================================== */
+.tactical-glossary-section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  z-index: 1010;
+  gap: 16px;
 }
 
-@media (max-width: 900px) {
-  .welcome-dots-indicator {
-    right: 15px;
-    gap: 15px;
-  }
+.tactical-glossary-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.dot-btn {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 240, 255, 0.35);
-  background: rgba(6, 12, 24, 0.6);
-  cursor: pointer;
-  position: relative;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0;
-  outline: none;
+.tactical-glossary-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.dot-btn::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #fff;
-  transition: transform 0.3s;
-}
-
-.dot-btn.active {
-  border-color: var(--neon-cyan);
-  background: var(--neon-cyan);
-  box-shadow: var(--glow-cyan);
-  transform: scale(1.3);
-}
-
-.dot-btn.active::after {
-  transform: translate(-50%, -50%) scale(1);
-}
-
-.dot-btn:hover {
-  border-color: #fff;
-  box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
-}
-
-/* Label tática em hover do dot */
-.dot-label {
-  position: absolute;
-  right: 24px;
-  top: 50%;
-  transform: translateY(-50%) translateX(10px);
+.tactical-group-title {
   font-family: var(--mono-font);
-  font-size: 8.5px;
-  font-weight: bold;
-  letter-spacing: 1px;
-  color: var(--neon-cyan);
-  text-shadow: 0 0 4px rgba(0, 240, 255, 0.4);
-  opacity: 0;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.dot-btn:hover .dot-label {
-  opacity: 1;
-  transform: translateY(-50%) translateX(0);
-}
-
-.dot-btn.active .dot-label {
-  opacity: 1;
-  transform: translateY(-50%) translateX(0);
-}
-
-/* ==========================================
-   TRANSIÇÃO CIBERNÉTICA CRT (FADE OUT)
-   ========================================== */
-.fade-out-cyber {
-  animation: cyberScanlineFade 0.6s cubic-bezier(0.77, 0, 0.175, 1) forwards;
-  pointer-events: none;
-}
-
-@keyframes cyberScanlineFade {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-    filter: brightness(1) contrast(1);
-  }
-  35% {
-    opacity: 0.9;
-    filter: brightness(2) contrast(1.5) hue-rotate(15deg);
-  }
-  70% {
-    transform: scaleY(0.01) scaleX(1.15);
-    opacity: 0.4;
-    filter: brightness(3.5);
-  }
-  100% {
-    transform: scale(0);
-    opacity: 0;
-    filter: brightness(5);
-  }
-}
-
-
-.welcome-table th {
-  padding: 14px 16px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
+  font-size: 11px;
   font-weight: 700;
+  color: var(--neon-cyan);
   text-transform: uppercase;
   letter-spacing: 1px;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+  padding-bottom: 4px;
+  margin: 0;
+}
+
+.tactical-terms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.tactical-term-card {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  transition: all 0.2s ease;
+}
+
+.tactical-term-card:hover {
+  border-color: rgba(0, 240, 255, 0.25);
+  background: rgba(0, 240, 255, 0.02);
+}
+
+.tactical-term-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.tactical-term-name {
+  font-family: var(--mono-font);
   font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
-.welcome-table td {
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  transition: background-color 0.2s;
-}
-
-.welcome-table tr:hover td {
-  background-color: rgba(255, 255, 255, 0.02);
-}
-
-.nation-cell {
-  color: #fff;
-  font-weight: bold;
-}
-
-.count-cell {
-  color: var(--text-light);
-}
-
-.percent-cell {
+.tactical-term-sub {
+  font-family: var(--sans-font);
+  font-size: 9px;
   color: var(--neon-cyan);
 }
 
-.risk-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  border-radius: 3px;
-  font-size: 10px;
-  font-weight: bold;
-  border: 1px solid;
+.tactical-term-desc {
+  font-family: var(--sans-font);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0;
 }
 
-.risk-badge.risk-extreme {
-  background: rgba(255, 0, 85, 0.12);
-  color: var(--neon-red);
-  border-color: rgba(255, 0, 85, 0.4);
-  text-shadow: 0 0 4px rgba(255, 0, 85, 0.6);
+@keyframes cinemaFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.risk-badge.risk-critical {
-  background: rgba(255, 120, 0, 0.12);
-  color: #ff7800;
-  border-color: rgba(255, 120, 0, 0.4);
-}
 
-.risk-badge.risk-moderate {
-  background: rgba(255, 210, 0, 0.12);
-  color: #ffd200;
-  border-color: rgba(255, 210, 0, 0.4);
-}
 
-.risk-badge.risk-low {
-  background: rgba(0, 255, 102, 0.12);
-  color: var(--neon-green);
-  border-color: rgba(0, 255, 102, 0.4);
-}
 
 /* ==========================================
    TRANSIÇÃO CIBERNÉTICA CRT (FADE OUT)
@@ -1622,6 +2551,7 @@
     filter: brightness(5);
   }
 }
+
 
 /* Animações Tecnológicas HUD (Slide-In de Painéis e Header) */
 @keyframes slideInTop {
@@ -1775,4 +2705,377 @@
 /* Estilo reduzido de fade para brilho neon secundário */
 :root {
   --glow-cyan-dim: 0 0 10px rgba(0, 240, 255, 0.2);
+  --neon-amber: #f59e0b;
 }
+
+
+/* ==========================================
+   BOTÕES DE FERRAMENTAS AMBIENTAIS NO HUD
+   ========================================== */
+.hud-tools-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-tool-btn {
+  background: rgba(6, 6, 11, 0.85);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  color: var(--text-light);
+  font-family: var(--mono-font);
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.hud-tool-btn:hover {
+  border-color: var(--neon-cyan);
+  color: #fff;
+  box-shadow: var(--glow-cyan);
+  transform: translateY(-1px);
+}
+
+.hud-tool-btn.active {
+  border-color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--neon-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+
+/* Seção de auxílio didático no painel */
+.helper-section {
+  background: rgba(0, 240, 255, 0.02);
+  border: 1px dashed rgba(0, 240, 255, 0.2);
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+
+.helper-text {
+  font-family: var(--sans-font);
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ==========================================
+   MODAIS HOLOGRÁFICOS DO COCKPIT 3D
+   ========================================== */
+.hud-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.hud-modal-backdrop.modal-opening {
+  animation: modalFadeIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hud-modal-backdrop.modal-closing {
+  animation: modalFadeOut 0.22s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.hud-modal-card {
+  background: rgba(6, 9, 18, 0.96);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), var(--glow-cyan);
+  border-radius: 6px;
+  width: 100%;
+  max-width: 860px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.hud-modal-card.card-opening {
+  animation: modalScaleIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hud-modal-card.card-closing {
+  animation: modalScaleOut 0.22s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.93) translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modalScaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.93) translateY(12px);
+  }
+}
+
+.modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.modal-header h3 {
+  font-family: var(--mono-font);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-muted);
+  border-radius: 4px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+  border-color: var(--neon-cyan);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.modal-body-scrollable {
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-glossary-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal-section-title {
+  font-family: var(--mono-font);
+  font-size: 11.5px;
+  color: var(--neon-cyan);
+  border-bottom: 1px solid rgba(0, 240, 255, 0.15);
+  padding-bottom: 4px;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.modal-glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.modal-glossary-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+
+.modal-glossary-term {
+  font-family: var(--mono-font);
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.modal-glossary-def {
+  font-family: var(--sans-font);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ==========================================
+   RESPONSIVIDADE UNIVERSAL
+   ========================================== */
+@media (max-width: 1050px) {
+  .cinema-navbar {
+    padding: 0 24px;
+  }
+  .cinema-nav-center {
+    gap: 20px;
+  }
+  .cinema-nav-link {
+    font-size: 10.5px;
+    letter-spacing: 1px;
+  }
+  .tactical-visor-inner {
+    padding: 22px 24px;
+  }
+  .tactical-features-grid {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 820px) {
+  .cinema-navbar {
+    height: 64px;
+    padding: 0 16px;
+  }
+  .cinema-brand {
+    font-size: 17px;
+  }
+  .cinema-nav-center {
+    gap: 12px;
+  }
+  .cinema-nav-link {
+    font-size: 9.5px;
+    letter-spacing: 0.5px;
+  }
+  .cinema-action-btn {
+    padding: 8px 14px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .cinema-side-nav {
+    width: auto !important;
+    height: auto !important;
+    padding: 6px;
+  }
+  .cinema-side-nav.prev {
+    left: 8px;
+  }
+  .cinema-side-nav.next {
+    right: 8px;
+  }
+  .cinema-hero-view {
+    padding: 24px 16px;
+  }
+  .cinema-hero-title {
+    font-size: 26px;
+    letter-spacing: 2px;
+  }
+  .cinema-bracket-btn {
+    padding: 14px 28px;
+    font-size: 11.5px;
+    letter-spacing: 1.5px;
+  }
+  .cinema-tactical-view {
+    padding: 76px 12px 20px;
+  }
+  .tactical-visor-frame {
+    height: auto;
+    max-height: calc(100vh - 105px);
+    padding: 0;
+  }
+  .tactical-visor-inner {
+    padding: 18px 16px;
+  }
+  .tactical-features-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .tactical-stack-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .tactical-pillars-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .tactical-terms-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .modal-glossary-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .telemetry-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  .cinema-navbar {
+    height: 58px;
+    padding: 0 12px;
+  }
+  .cinema-brand {
+    font-size: 15px;
+    letter-spacing: 1px;
+  }
+  .cinema-nav-center {
+    display: none; /* Em telas muito estreitas como smartphones portrait, evita truncar links */
+  }
+  .cinema-action-btn {
+    padding: 7px 12px;
+    font-size: 9.5px;
+  }
+  .cinema-hero-title {
+    font-size: 21px;
+    letter-spacing: 1.5px;
+  }
+  .cinema-hero-subtitle {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  .cinema-hero-footer {
+    display: none;
+  }
+  .cinema-bracket-btn {
+    padding: 12px 22px;
+    font-size: 11px;
+    letter-spacing: 1.2px;
+  }
+  .hud-panel {
+    width: calc(100vw - 20px) !important;
+  }
+}
+

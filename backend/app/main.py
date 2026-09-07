@@ -146,7 +146,7 @@ async def health_check():
 @app.get("/api/objetos", response_model=List[schemas.ObjetoOrbitalResponse])
 def listar_objetos(
     skip: int = Query(0, ge=0, description="Offset para paginação"),
-    limit: int = Query(100, ge=1, le=500, description="Limite máximo de registros a retornar"),
+    limit: int = Query(100, ge=1, le=1500, description="Limite máximo de registros a retornar"),
     categoria_id: Optional[int] = Query(None, description="Filtro opcional por ID da categoria"),
     busca: Optional[str] = Query(None, description="Filtro de texto opcional para Nome ou NORAD ID"),
     db: Session = Depends(get_db)
@@ -284,6 +284,11 @@ def obter_estatisticas(db: Session = Depends(get_db)):
         percentual_detritos = (total_detritos / total_objetos * 100.0) if total_objetos > 0 else 0.0
 
         # 3. Distribuição de objetos por Nação/País de origem (agregação condicional de alta performance por categoria)
+        cat_inativo = db.query(CategoriaObjeto.id).filter(
+            CategoriaObjeto.nome.ilike("%inativo%")
+        ).first()
+        id_inativo = cat_inativo[0] if cat_inativo else 2
+
         cat_detritos = db.query(CategoriaObjeto.id).filter(
             CategoriaObjeto.nome.ilike("%detrito%") | CategoriaObjeto.nome.ilike("%debris%")
         ).first()
@@ -298,6 +303,7 @@ def obter_estatisticas(db: Session = Depends(get_db)):
             ObjetoOrbital.pais.label("pais"),
             func.count(ObjetoOrbital.id).label("total"),
             func.count(case((ObjetoOrbital.categoria_id == 1, 1))).label("ativos"),
+            func.count(case((ObjetoOrbital.categoria_id == id_inativo, 1))).label("inativos"),
             func.count(case((ObjetoOrbital.categoria_id == id_detrito, 1))).label("detritos"),
             func.count(case((ObjetoOrbital.categoria_id == id_estacao, 1))).label("estacoes")
         ).group_by(
@@ -311,6 +317,7 @@ def obter_estatisticas(db: Session = Depends(get_db)):
                 pais=p.pais, 
                 total=p.total,
                 ativos=p.ativos,
+                inativos=p.inativos,
                 detritos=p.detritos,
                 estacoes=p.estacoes
             )

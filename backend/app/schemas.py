@@ -52,6 +52,7 @@ class EstatisticasPais(BaseModel):
     pais: str
     total: int
     ativos: Optional[int] = 0
+    inativos: Optional[int] = 0
     detritos: Optional[int] = 0
     estacoes: Optional[int] = 0
 

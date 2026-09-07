@@ -161,14 +161,21 @@ class APIConector:
                 else:
                     data_lancamento = None
 
+                # Classificação de satélites inativos históricos
+                cat_id_final = categoria.id
+                status_final = status_objeto
+                if categoria.id == 1 and data_lancamento and data_lancamento.year < 2005 and norad_id not in ["22823", "25400", "25544"]:
+                    cat_id_final = 2  # Satélite Inativo
+                    status_final = "Inativo"
+
                 # Estruturar dados do Objeto para inserção em lote
                 objetos_a_inserir.append({
                     "nome": linha0,
                     "norad_id": norad_id,
                     "pais": pais,
-                    "status": status_objeto,
+                    "status": status_final,
                     "data_lancamento": data_lancamento,
-                    "categoria_id": categoria.id
+                    "categoria_id": cat_id_final
                 })
 
                 # Guardar dados temporários do TLE para processamento posterior

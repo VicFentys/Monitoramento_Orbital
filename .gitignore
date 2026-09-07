@@ -71,3 +71,6 @@ pnpm-debug.log*
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Documentos do projeto
+internal_docs/
