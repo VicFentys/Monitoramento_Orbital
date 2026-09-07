@@ -205,7 +205,7 @@ export function obterFichaFactual(sat, parametrosOrbitais) {
   };
 }
 
-// 3. GLOSSÁRIO DIDÁTICO ASTRODINÂMICO (PARA O 4º SLIDE E CONSULTA NO COCKPIT)
+// 3. GLOSSÁRIO DIDÁTICO ASTRODINÂMICO (PARA O 4º SLIDE E CONSULTA NO CONSOLE)
 export const GLOSSARIO_ORBITAL = [
   {
     categoria: "Regimes de Órbita",

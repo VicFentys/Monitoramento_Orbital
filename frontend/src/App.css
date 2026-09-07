@@ -1455,7 +1455,7 @@
   margin-top: 14px;
 }
 
-/* Botão com cantos em colchete tático [ INITIATE SYSTEM ] */
+/* Botão com cantos em colchete tático [ INICIAR MONITORAMENTO ] */
 .cinema-bracket-btn {
   position: relative;
   background: rgba(3, 8, 20, 0.55);
@@ -1478,13 +1478,14 @@
   z-index: 2;
 }
 
-/* Cantos táticos em L [ ] brancos */
+/* Cantos táticos em L [ ] brancos levemente em volta do botão */
 .bracket-mark {
   position: absolute;
   width: 9px;
   height: 9px;
   pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: transparent !important;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .bracket-mark.b-tl {
@@ -1492,6 +1493,7 @@
   left: -4px;
   border-top: 2px solid #ffffff;
   border-left: 2px solid #ffffff;
+  animation: bracketBreatheTL 2.2s ease-in-out infinite;
 }
 
 .bracket-mark.b-tr {
@@ -1499,6 +1501,7 @@
   right: -4px;
   border-top: 2px solid #ffffff;
   border-right: 2px solid #ffffff;
+  animation: bracketBreatheTR 2.2s ease-in-out infinite;
 }
 
 .bracket-mark.b-bl {
@@ -1506,6 +1509,7 @@
   left: -4px;
   border-bottom: 2px solid #ffffff;
   border-left: 2px solid #ffffff;
+  animation: bracketBreatheBL 2.2s ease-in-out infinite;
 }
 
 .bracket-mark.b-br {
@@ -1513,8 +1517,47 @@
   right: -4px;
   border-bottom: 2px solid #ffffff;
   border-right: 2px solid #ffffff;
+  animation: bracketBreatheBR 2.2s ease-in-out infinite;
 }
 
+/* Animação tática contínua de afastamento e aproximação (estilo seleção de jogo) */
+@keyframes bracketBreatheTL {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-3px, -3px);
+  }
+}
+
+@keyframes bracketBreatheTR {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(3px, -3px);
+  }
+}
+
+@keyframes bracketBreatheBL {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-3px, 3px);
+  }
+}
+
+@keyframes bracketBreatheBR {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(3px, 3px);
+  }
+}
+
+/* Efeito de Hover Tático Cyberpunk: Ciano Vibrante com borda contínua completa */
 .cinema-bracket-btn:hover {
   background: rgba(0, 240, 255, 0.14);
   border-color: rgba(0, 240, 255, 0.5);
@@ -1522,10 +1565,10 @@
   transform: scale(1.02);
 }
 
+/* A animação contínua de seleção de jogo permanece SEMPRE ativa mesmo no hover */
 .cinema-bracket-btn:hover .bracket-mark {
   border-color: var(--neon-cyan);
-  box-shadow: 0 0 8px var(--neon-cyan);
-  transform: scale(1.15);
+  box-shadow: 0 0 12px var(--neon-cyan);
 }
 
 .cinema-hero-footer {
@@ -1862,7 +1905,288 @@
 }
 
 /* ==========================================
-   CONTEÚDO DA SEÇÃO 1: RECURSOS TECNOLÓGICOS DO SISTEMA
+   CONTEÚDO DA SEÇÃO 1: SOBRE O PROJETO & DIRETRIZES DO SISTEMA
+   Apresentação didática, arquitetura de dados (35k vs 6.3k vs 1k) e fontes
+   ========================================== */
+.tactical-about-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.tactical-about-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  align-items: stretch;
+  padding: 8px 4px 4px 4px;
+}
+
+.tactical-about-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  backdrop-filter: blur(6px);
+}
+
+.tactical-about-card:hover {
+  background: rgba(0, 240, 255, 0.04);
+  border-color: rgba(0, 240, 255, 0.5);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 240, 255, 0.2);
+}
+
+.tactical-about-card.highlight-card {
+  border-color: rgba(251, 191, 36, 0.3);
+  background: linear-gradient(180deg, rgba(251, 191, 36, 0.03) 0%, rgba(255, 255, 255, 0.015) 100%);
+}
+
+.tactical-about-card.highlight-card:hover {
+  border-color: rgba(251, 191, 36, 0.6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 16px rgba(251, 191, 36, 0.25);
+}
+
+.tactical-about-card.highlight-card .about-card-header {
+  border-bottom-color: rgba(251, 191, 36, 0.25);
+}
+
+.tactical-about-card.highlight-card .about-card-title {
+  color: #fbbf24;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+}
+
+.tactical-about-card.highlight-card:hover .about-card-title {
+  color: #fbbf24;
+  text-shadow: 0 0 14px rgba(251, 191, 36, 0.7);
+}
+
+/* Bloco Destacado em Verde: Mesmo design do amarelo, mantendo tema verde */
+.tactical-feature-card.highlight-green {
+  border-color: rgba(0, 255, 102, 0.3);
+  background: linear-gradient(180deg, rgba(0, 255, 102, 0.03) 0%, rgba(255, 255, 255, 0.015) 100%);
+}
+
+.tactical-feature-card.highlight-green:hover {
+  border-color: rgba(0, 255, 102, 0.6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 16px rgba(0, 255, 102, 0.25);
+}
+
+.tactical-feature-card.highlight-green .feature-card-header {
+  border-bottom-color: rgba(0, 255, 102, 0.25);
+}
+
+.tactical-feature-card.highlight-green .tactical-feature-title {
+  color: #00ff66;
+  text-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
+}
+
+.tactical-feature-card.highlight-green:hover .tactical-feature-title {
+  color: #00ff66;
+  text-shadow: 0 0 14px rgba(0, 255, 102, 0.7);
+}
+
+.tactical-feature-card.highlight-green .spec-dot {
+  background: #00ff66;
+  box-shadow: 0 0 6px #00ff66;
+}
+
+.about-card-header,
+.feature-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+  padding-bottom: 10px;
+}
+
+.about-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.about-icon-cyan {
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  color: var(--neon-cyan);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+.about-icon-green {
+  background: rgba(0, 255, 102, 0.12);
+  border: 1px solid rgba(0, 255, 102, 0.35);
+  color: #00ff66;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+}
+
+.about-icon-amber {
+  background: rgba(251, 191, 36, 0.12);
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  color: #fbbf24;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+}
+
+.about-icon-purple {
+  background: rgba(192, 132, 252, 0.12);
+  border: 1px solid rgba(192, 132, 252, 0.35);
+  color: #c084fc;
+  box-shadow: 0 0 10px rgba(192, 132, 252, 0.2);
+}
+
+.tactical-about-card:hover .about-icon-cyan,
+.tactical-feature-card:hover .about-icon-cyan {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.45);
+}
+
+.tactical-about-card:hover .about-icon-green,
+.tactical-feature-card:hover .about-icon-green {
+  border-color: #00ff66;
+  box-shadow: 0 0 14px rgba(0, 255, 102, 0.45);
+}
+
+.tactical-about-card.highlight-card:hover .about-icon-amber,
+.tactical-feature-card:hover .about-icon-amber {
+  border-color: #fbbf24;
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.45);
+}
+
+.tactical-about-card:hover .about-icon-purple,
+.tactical-feature-card:hover .about-icon-purple {
+  border-color: #c084fc;
+  box-shadow: 0 0 14px rgba(192, 132, 252, 0.45);
+}
+
+.about-card-title {
+  font-family: var(--mono-font);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  color: #ffffff;
+  margin: 0;
+  text-transform: uppercase;
+  line-height: 1.35;
+}
+
+.tactical-about-card:hover .about-card-title {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+.about-card-lead {
+  font-family: var(--sans-font);
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.about-card-lead strong {
+  color: #ffffff;
+}
+
+.about-card-list {
+  list-style: none;
+  margin: 2px 0 0 0;
+  padding: 10px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.09);
+}
+
+.about-card-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 11px;
+  font-family: var(--sans-font);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.about-list-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--neon-cyan);
+  margin-top: 5px;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px var(--neon-cyan);
+}
+
+.highlight-card .about-list-dot {
+  background: #fbbf24;
+  box-shadow: 0 0 6px #fbbf24;
+}
+
+.about-card-list strong {
+  color: #ffffff;
+}
+
+/* Faixa Inferior de Métricas Chave do Projeto */
+.tactical-about-metrics-bar {
+  background: rgba(3, 14, 28, 0.7);
+  border: 1px solid rgba(0, 240, 255, 0.22);
+  border-radius: 4px;
+  padding: 14px 24px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  align-items: center;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  margin-top: 4px;
+}
+
+.about-metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  font-family: var(--mono-font);
+}
+
+.about-metric-val {
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+  letter-spacing: 0.8px;
+}
+
+.about-metric-lbl {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.about-metric-sub {
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.4px;
+}
+
+.about-metric-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(0, 240, 255, 0.18);
+}
+
+/* ==========================================
+   CONTEÚDO DA SEÇÃO 2: RECURSOS TECNOLÓGICOS DO SISTEMA
    Cartões enriquecidos + Cartão Full-Width de Stack Tecnológica
    ========================================== */
 .tactical-features-container {
@@ -1908,8 +2232,6 @@
   text-transform: uppercase;
   margin: 0;
   line-height: 1.4;
-  border-bottom: 1px solid rgba(0, 240, 255, 0.2);
-  padding-bottom: 10px;
 }
 
 .tactical-feature-card:hover .tactical-feature-title {
@@ -2125,6 +2447,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
+  align-items: stretch;
 }
 
 .tactical-pillar-card {
@@ -2135,6 +2458,8 @@
   padding: 14px 18px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  min-height: 124px;
   gap: 8px;
   transition: all 0.25s ease;
 }
@@ -2256,6 +2581,10 @@
   color: #ff5577;
 }
 
+.tactical-table th.th-inactive {
+  color: #fbbf24;
+}
+
 .tactical-table th.th-active {
   color: #38bdf8;
 }
@@ -2324,12 +2653,14 @@
   color: rgba(255, 255, 255, 0.25) !important;
 }
 
-/* Badges de Risco com Cores Vivas e Ponto Pulsante */
+/* Badges de Risco com Cores Vivas, Tamanho Padrão Uniforme e Ponto Pulsante */
 .risk-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
+  width: 220px;
+  height: 28px;
   padding: 4px 12px;
   border-radius: 3px;
   font-family: var(--mono-font);
@@ -2423,6 +2754,42 @@
 .risk-badge.risk-low .risk-dot {
   background: #00ff66;
   box-shadow: 0 0 8px #00ff66;
+}
+
+/* Rodapé Informativo do Censo de Objetos */
+.tactical-table-footer {
+  padding: 12px 16px;
+  background: rgba(0, 16, 32, 0.75);
+  border-top: 1px solid rgba(0, 240, 255, 0.18);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-family: var(--mono-font);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.55;
+}
+
+.tactical-table-footer-icon {
+  flex-shrink: 0;
+  color: var(--neon-cyan);
+  margin-top: 2px;
+}
+
+.tactical-table-footer-text {
+  flex: 1;
+}
+
+.tactical-table-footer-highlight {
+  color: var(--neon-cyan);
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  margin-right: 4px;
+}
+
+.tactical-table-footer strong {
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
 }
 
 /* ==========================================
@@ -2769,7 +3136,7 @@
 }
 
 /* ==========================================
-   MODAIS HOLOGRÁFICOS DO COCKPIT 3D
+   MODAIS HOLOGRÁFICOS DO CONSOLE 3D
    ========================================== */
 .hud-modal-backdrop {
   position: fixed;
@@ -2941,6 +3308,380 @@
 }
 
 /* ==========================================
+   MODAL: MONITOR DE SUSTENTABILIDADE & KESSLER
+   ========================================== */
+.sustainability-modal-card {
+  max-width: 940px;
+}
+
+.sustainability-modal-body {
+  padding: 22px 24px 18px;
+  gap: 16px;
+}
+
+.sustainability-intro-lead {
+  font-family: var(--sans-font);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.sustainability-intro-lead strong {
+  color: var(--neon-cyan);
+}
+
+.sustainability-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.sustainability-card {
+  background: rgba(3, 14, 28, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid rgba(0, 240, 255, 0.4);
+  border-radius: 4px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.sustainability-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* Identidades visuais por pilar */
+.card-kessler {
+  border-left-color: var(--neon-red);
+}
+.card-kessler:hover {
+  border-color: rgba(255, 0, 85, 0.4);
+  border-left-color: var(--neon-red);
+  background: rgba(255, 0, 85, 0.03);
+}
+
+.card-reentry {
+  border-left-color: #ff9900;
+}
+.card-reentry:hover {
+  border-color: rgba(255, 153, 0, 0.4);
+  border-left-color: #ff9900;
+  background: rgba(255, 153, 0, 0.03);
+}
+
+.card-magneto {
+  border-left-color: #38bdf8;
+}
+.card-magneto:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  border-left-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.03);
+}
+
+.card-climate {
+  border-left-color: #a855f7;
+}
+.card-climate:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+  border-left-color: #a855f7;
+  background: rgba(168, 85, 247, 0.03);
+}
+
+.s-card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.s-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.s-icon-kessler {
+  background: rgba(255, 0, 85, 0.12);
+  border: 1px solid rgba(255, 0, 85, 0.35);
+  color: var(--neon-red);
+  box-shadow: 0 0 10px rgba(255, 0, 85, 0.2);
+}
+
+.s-icon-reentry {
+  background: rgba(255, 153, 0, 0.12);
+  border: 1px solid rgba(255, 153, 0, 0.35);
+  color: #ff9900;
+  box-shadow: 0 0 10px rgba(255, 153, 0, 0.2);
+}
+
+.s-icon-magneto {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+.s-icon-climate {
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  color: #a855f7;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+}
+
+.s-card-title {
+  font-family: var(--mono-font);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.s-stat-badge {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  white-space: nowrap;
+  align-self: flex-start;
+  margin: 2px 0;
+}
+
+.badge-kessler {
+  color: var(--neon-red);
+  background: rgba(255, 0, 85, 0.1);
+  border: 1px solid rgba(255, 0, 85, 0.3);
+}
+
+.badge-reentry {
+  color: #ff9900;
+  background: rgba(255, 153, 0, 0.1);
+  border: 1px solid rgba(255, 153, 0, 0.3);
+}
+
+.badge-magneto {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.badge-climate {
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.s-card-text {
+  font-family: var(--sans-font);
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.s-card-subtext-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  padding: 8px 10px;
+  margin-top: 2px;
+}
+
+.s-subtext-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.dot-red { background: var(--neon-red); box-shadow: 0 0 6px var(--neon-red); }
+.dot-orange { background: #ff9900; box-shadow: 0 0 6px #ff9900; }
+.dot-cyan { background: #38bdf8; box-shadow: 0 0 6px #38bdf8; }
+.dot-purple { background: #a855f7; box-shadow: 0 0 6px #a855f7; }
+
+.s-card-subtext {
+  font-family: var(--sans-font);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.sustainability-footer-note {
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sustainability-note-text {
+  font-family: var(--mono-font);
+  font-size: 9.5px;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.3px;
+  text-align: center;
+}
+
+.sustainability-note-text strong {
+  color: var(--neon-cyan);
+}
+
+/* ==========================================
+   MODAL: BRIEFING / TUTORIAL DO OPERADOR
+   ========================================== */
+.tutorial-modal-card {
+  max-width: 920px;
+}
+
+.tutorial-body {
+  padding: 24px 26px 18px;
+  gap: 20px;
+}
+
+.tutorial-intro-lead {
+  font-family: var(--sans-font);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.tutorial-intro-lead strong {
+  color: var(--neon-cyan);
+}
+
+.tutorial-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.tutorial-step-card {
+  position: relative;
+  background: rgba(3, 14, 28, 0.7);
+  border: 1px solid rgba(0, 240, 255, 0.18);
+  border-radius: 4px;
+  padding: 30px 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.tutorial-step-card:hover {
+  border-color: rgba(0, 240, 255, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 240, 255, 0.15);
+}
+
+.step-icon-box {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  background: #030d1a;
+  border: 1px solid rgba(0, 240, 255, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 240, 255, 0.15);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+}
+
+.tutorial-step-card:hover .step-icon-box {
+  border-color: rgba(0, 240, 255, 0.65);
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.4);
+  transform: translateX(-50%) scale(1.06);
+}
+
+.step-icon.cyan {
+  color: var(--neon-cyan);
+  filter: drop-shadow(0 0 6px var(--neon-cyan));
+}
+
+.step-icon.green {
+  color: #00ff66;
+  filter: drop-shadow(0 0 6px #00ff66);
+}
+
+.step-icon.amber {
+  color: #fbbf24;
+  filter: drop-shadow(0 0 6px #fbbf24);
+}
+
+.step-icon.red {
+  color: #ff0055;
+  filter: drop-shadow(0 0 6px #ff0055);
+}
+
+.step-title {
+  font-family: var(--mono-font);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.step-desc {
+  font-family: var(--sans-font);
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
+
+.tutorial-footer-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 12px;
+  margin-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tutorial-hint-text {
+  font-family: var(--mono-font);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.4px;
+  text-align: center;
+}
+
+.tutorial-hint-text strong {
+  color: var(--neon-cyan);
+}
+
+/* ==========================================
    RESPONSIVIDADE UNIVERSAL
    ========================================== */
 @media (max-width: 1050px) {
@@ -3016,6 +3757,18 @@
   .tactical-visor-inner {
     padding: 18px 16px;
   }
+  .tactical-about-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .tactical-about-metrics-bar {
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 12px;
+  }
+  .about-metric-divider {
+    display: none;
+  }
   .tactical-features-grid {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -3038,6 +3791,32 @@
   }
   .telemetry-metrics-grid {
     grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .tutorial-modal-card,
+  .sustainability-modal-card {
+    max-width: 95vw;
+  }
+  .sustainability-pillars-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .tutorial-steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    row-gap: 28px;
+    margin-top: 20px;
+  }
+  .tutorial-body {
+    padding: 20px 16px 16px;
+    gap: 16px;
+  }
+  .hud-tools-section {
+    gap: 6px;
+  }
+  .hud-tool-btn {
+    padding: 6px 10px;
+    font-size: 9.5px;
     gap: 6px;
   }
 }
@@ -3077,5 +3856,19 @@
   .hud-panel {
     width: calc(100vw - 20px) !important;
   }
+  .tutorial-steps-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    row-gap: 28px;
+    margin-top: 20px;
+  }
+  .hud-tools-section {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .s-stat-badge {
+    margin-left: 0;
+  }
 }
+
 

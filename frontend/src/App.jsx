@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef, useMemo, useLayoutEffect } from 'react';
-import { 
-  Globe, 
-  Search, 
-  Database, 
-  TrendingUp, 
-  Info, 
-  X, 
-  Cpu, 
-  Layers, 
-  Zap, 
-  ChevronRight, 
-  ChevronLeft, 
+import {
+  Globe,
+  Search,
+  Database,
+  TrendingUp,
+  Info,
+  X,
+  Cpu,
+  Layers,
+  Zap,
+  ChevronRight,
+  ChevronLeft,
   Compass,
   ShieldAlert,
   AlertTriangle,
@@ -18,7 +18,9 @@ import {
   BookOpen,
   Activity,
   RotateCw,
-  Wind
+  Wind,
+  MousePointer,
+  Crosshair
 } from 'lucide-react';
 import * as satellite from 'satellite.js';
 import './App.css';
@@ -92,11 +94,12 @@ function App() {
     }
   }, [secaoAtiva]);
 
-  // Alturas ideais base por seção para garantir acomodação completa de textos e cartões
+  // Alturas ideais base por seção para garantir acomodação inicial sem piscar
   const ALTURAS_BASE = {
-    1: 690, // Recursos Tecnológicos: 3 cartões enriquecidos + cartão full-width de arquitetura stack
-    2: 700, // Sustentabilidade: 4 pilares + tabela geopolítica completa
-    3: 560  // Glossário: grade completa de categorias
+    1: 460, // Sobre o Projeto: 3 cartões conceituais + barra de métricas chave
+    2: 640, // Recursos Tecnológicos: 3 cartões enriquecidos + cartão full-width de arquitetura stack
+    3: 750, // Sustentabilidade: 4 pilares unificados + tabela geopolítica completa
+    4: 520  // Glossário: grade completa de categorias
   };
 
   const handleMudarSecao = (novaSecao) => {
@@ -169,7 +172,7 @@ function App() {
 
     secaoAnteriorRef.current = secaoAtiva;
 
-    // Cálculo dinâmico da altura para transição fluida entre os slides 1, 2 e 3
+    // Cálculo dinâmico da altura para transição fluida entre os slides
     const calcularAltura = () => {
       if (!visorInnerRef.current) return;
       const headerEl = visorInnerRef.current.querySelector('.tactical-visor-header');
@@ -180,13 +183,15 @@ function App() {
       const contentH = contentEl ? Math.max(contentEl.offsetHeight, contentEl.scrollHeight) : 260;
 
       const isMobile = window.innerWidth <= 900;
-      // padding interno (28+28=56) + padding body (4+8=12) + bordas do frame (2) + buffer preventivo (22)
-      const bufferVertical = isMobile ? 48 : 92;
+      // padding interno (28+28=56) + padding body (4+8=12) + bordas do frame (2) + margem do header (16) = 86
+      const bufferVertical = isMobile ? 48 : 86;
 
       const secaoAlvo = secaoAtiva > 0 ? secaoAtiva : secaoVisorExibida;
-      const alturaMinimaSecao = ALTURAS_BASE[secaoAlvo] || 320;
+      const fallbackH = ALTURAS_BASE[secaoAlvo] || 320;
 
-      const naturalHeight = Math.max(alturaMinimaSecao, Math.ceil(headerH + contentH + bufferVertical));
+      // Se o conteúdo já possui altura mensurada, usa a altura necessária exata sem inflar espaço vazio
+      const alturaCalculada = Math.ceil(headerH + contentH + bufferVertical);
+      const naturalHeight = contentH > 80 ? alturaCalculada : fallbackH;
       const maxPermitido = Math.max(300, window.innerHeight - (isMobile ? 95 : 115));
       const finalH = Math.min(naturalHeight, maxPermitido);
       setVisorHeight(finalH);
@@ -216,9 +221,10 @@ function App() {
   const [painelEsquerdoAberto, setPainelEsquerdoAberto] = useState(false);
   const [painelDireitoAberto, setPainelDireitoAberto] = useState(false);
 
-  // Modais de Aprofundamento no Cockpit com controle de animação suave
+  // Modais de Aprofundamento no Console com controle de animação suave
   const [modalSustentabilidadeAberto, setModalSustentabilidadeAberto] = useState(false);
   const [modalGlossarioAberto, setModalGlossarioAberto] = useState(false);
+  const [modalTutorialAberto, setModalTutorialAberto] = useState(false);
   const [modalFechando, setModalFechando] = useState(false);
 
   const handleFecharModais = () => {
@@ -226,6 +232,7 @@ function App() {
     setTimeout(() => {
       setModalSustentabilidadeAberto(false);
       setModalGlossarioAberto(false);
+      setModalTutorialAberto(false);
       setModalFechando(false);
     }, 220);
   };
@@ -233,13 +240,22 @@ function App() {
   const handleAbrirSustentabilidade = () => {
     setModalFechando(false);
     setModalGlossarioAberto(false);
+    setModalTutorialAberto(false);
     setModalSustentabilidadeAberto(true);
   };
 
   const handleAbrirGlossario = () => {
     setModalFechando(false);
     setModalSustentabilidadeAberto(false);
+    setModalTutorialAberto(false);
     setModalGlossarioAberto(true);
+  };
+
+  const handleAbrirTutorial = () => {
+    setModalFechando(false);
+    setModalSustentabilidadeAberto(false);
+    setModalGlossarioAberto(false);
+    setModalTutorialAberto(true);
   };
 
   // Referência para controlar redimensionamento de painéis
@@ -318,7 +334,7 @@ function App() {
   }, []);
 
 
-  // Manipulador de Scroll (Wheel) para transição de slides (0 a 3)
+  // Manipulador de Scroll (Wheel) para transição de slides (0 a 4)
   const handleWheel = (e) => {
     if (telaAtiva !== 'inicio' || cyberFade) return;
 
@@ -326,7 +342,7 @@ function App() {
     if (agora - lastScrollTimeRef.current < 750) return;
 
     if (e.deltaY > 0) {
-      if (secaoAtiva < 3) {
+      if (secaoAtiva < 4) {
         setSecaoAtiva(prev => prev + 1);
         lastScrollTimeRef.current = agora;
       }
@@ -346,16 +362,16 @@ function App() {
 
   const handleTouchEnd = (e) => {
     if (telaAtiva !== 'inicio' || cyberFade) return;
-    
+
     const touchEndY = e.changedTouches[0].clientY;
     const diffY = touchStartYRef.current - touchEndY;
     const agora = Date.now();
-    
+
     if (Math.abs(diffY) > 40 && agora - lastScrollTimeRef.current < 750) return;
-    
+
     if (Math.abs(diffY) > 40) {
       if (diffY > 0) {
-        if (secaoAtiva < 3) {
+        if (secaoAtiva < 4) {
           setSecaoAtiva(prev => prev + 1);
           lastScrollTimeRef.current = agora;
         }
@@ -394,19 +410,19 @@ function App() {
         const ativas = Object.entries(categoriasAtivas)
           .filter(([_, ativa]) => ativa)
           .map(([k]) => Number(k));
-        
+
         if (ativas.length === 0) {
           setObjetos([]);
           return;
         }
-        
+
         // Carga padrão calibrada para 1.000 objetos para demonstrar densidade realista
         let url = `${API_URL}/api/objetos?limit=1000`;
-        
+
         if (ativas.length === 1) {
           url += `&categoria_id=${ativas[0]}`;
         }
-        
+
         const resObjs = await fetch(url);
         if (resObjs.ok) {
           const dataObjs = await resObjs.json();
@@ -483,7 +499,7 @@ function App() {
         viewerInstance.entities.remove(orbitaEntidadeRef.current);
         orbitaEntidadeRef.current = null;
       }
-    } catch (e) {}
+    } catch (e) { }
   };
 
   // 4. INICIALIZAÇÃO DO GLOBO CESIUM 3D E EVENTOS DE HOVER COM TRILHA
@@ -524,7 +540,7 @@ function App() {
             url: window.Cesium.buildModuleUrl('Assets/Textures/NaturalEarthII')
           });
           viewerInstance.imageryLayers.addImageryProvider(provider);
-        } catch (e) {}
+        } catch (e) { }
       });
     }
 
@@ -626,7 +642,7 @@ function App() {
               lastHoveredEntity.point.pixelSize = catId === 4 ? 10 : 7;
               lastHoveredEntity.point.outlineColor = window.Cesium.Color.BLACK;
               lastHoveredEntity.point.outlineWidth = 1.5;
-            } catch (e) {}
+            } catch (e) { }
           }
 
           lastHoveredEntity = entity;
@@ -638,7 +654,7 @@ function App() {
             entity.point.pixelSize = currentSize + 4;
             entity.point.outlineColor = window.Cesium.Color.WHITE;
             entity.point.outlineWidth = 2.5;
-          } catch (e) {}
+          } catch (e) { }
 
           // Traçar a órbita no Cesium sob hover caso o satélite não seja o já selecionado
           if (satData && satData.ultimo_tle) {
@@ -722,7 +738,7 @@ function App() {
             lastHoveredEntity.point.pixelSize = catId === 4 ? 10 : 7;
             lastHoveredEntity.point.outlineColor = window.Cesium.Color.BLACK;
             lastHoveredEntity.point.outlineWidth = 1.5;
-          } catch (e) {}
+          } catch (e) { }
           lastHoveredEntity = null;
           satHoverIdRef.current = null;
 
@@ -751,7 +767,7 @@ function App() {
             const transform = window.Cesium.Transforms.eastNorthUpToFixedFrame(position);
             viewerInstance.camera.lookAtTransform(transform);
           }
-        } catch (e) {}
+        } catch (e) { }
       }
     });
 
@@ -775,7 +791,7 @@ function App() {
         if (viewer && !viewer.isDestroyed()) {
           viewer.resize();
         }
-      } catch (e) {}
+      } catch (e) { }
     };
 
     window.addEventListener('resize', handleResize);
@@ -792,10 +808,10 @@ function App() {
           entitiesRef.current.forEach((entity) => {
             try {
               viewer.entities.remove(entity);
-            } catch (e) {}
+            } catch (e) { }
           });
         }
-      } catch (e) {}
+      } catch (e) { }
       entitiesRef.current.clear();
     };
 
@@ -846,7 +862,7 @@ function App() {
 
                 return window.Cesium.Cartesian3.fromDegrees(longitude, latitude, altitude, undefined, result);
               }
-            } catch (e) {}
+            } catch (e) { }
             return undefined;
           }, false),
           point: {
@@ -877,7 +893,7 @@ function App() {
     entitiesRef.current.forEach((entity) => {
       try {
         entity.show = mostrarObjetos;
-      } catch (e) {}
+      } catch (e) { }
     });
     if (!mostrarObjetos) {
       limparTrilhaOrbital(viewer);
@@ -946,6 +962,7 @@ function App() {
     setTimeout(() => {
       setTelaAtiva('simulador');
       setCyberFade(false);
+      setModalTutorialAberto(true);
     }, 600);
   };
 
@@ -1009,39 +1026,46 @@ function App() {
             </div>
 
             <div className="cinema-nav-center">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={`cinema-nav-link ${secaoAtiva === 0 ? 'active' : ''}`}
                 onClick={() => handleMudarSecao(0)}
               >
-                VISÃO GERAL
+                INÍCIO
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={`cinema-nav-link ${secaoAtiva === 1 ? 'active' : ''}`}
                 onClick={() => handleMudarSecao(1)}
               >
-                RECURSOS
+                SOBRE
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={`cinema-nav-link ${secaoAtiva === 2 ? 'active' : ''}`}
                 onClick={() => handleMudarSecao(2)}
               >
-                SUSTENTABILIDADE
+                RECURSOS
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={`cinema-nav-link ${secaoAtiva === 3 ? 'active' : ''}`}
                 onClick={() => handleMudarSecao(3)}
+              >
+                SUSTENTABILIDADE
+              </button>
+              <button
+                type="button"
+                className={`cinema-nav-link ${secaoAtiva === 4 ? 'active' : ''}`}
+                onClick={() => handleMudarSecao(4)}
               >
                 GLOSSÁRIO
               </button>
             </div>
 
             <div className="cinema-nav-right">
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="cinema-planet-btn"
                 onClick={handleIniciarMonitoramento}
                 aria-label="Acessar Monitoramento Orbital"
@@ -1054,19 +1078,19 @@ function App() {
           </nav>
 
           {/* SETAS LATERAIS MINIMALISTAS DIGITAIS */}
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="cinema-side-nav prev"
-            onClick={() => handleMudarSecao((secaoAtiva - 1 + 4) % 4)}
+            onClick={() => handleMudarSecao((secaoAtiva - 1 + 5) % 5)}
             aria-label="Anterior"
             title="Seção anterior"
           >
             <ChevronLeft size={46} strokeWidth={2.2} />
           </button>
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="cinema-side-nav next"
-            onClick={() => handleMudarSecao((secaoAtiva + 1) % 4)}
+            onClick={() => handleMudarSecao((secaoAtiva + 1) % 5)}
             aria-label="Próximo"
             title="Próxima seção"
           >
@@ -1093,7 +1117,7 @@ function App() {
                 </p>
 
                 <div className="cinema-btn-container">
-                  <button 
+                  <button
                     type="button"
                     className="cinema-bracket-btn"
                     onClick={handleIniciarMonitoramento}
@@ -1116,7 +1140,7 @@ function App() {
           {(secaoAtiva > 0 || fechandoVisor) && (
             /* SEÇÕES 1, 2 e 3: VISOR TÁTICO ESTILO GLASS PAD */
             <div className={`cinema-tactical-view ${fechandoVisor ? 'fechando' : ''}`}>
-              <div 
+              <div
                 className={`tactical-visor-frame ${aberturaCentro ? 'anim-abertura-centro' : ''} ${fechandoVisor ? 'anim-fechamento-centro' : ''}`}
                 style={{ height: visorHeight ? `${visorHeight}px` : undefined }}
               >
@@ -1124,278 +1148,431 @@ function App() {
                   {/* Título Centralizado e Limpo */}
                   <div className="tactical-visor-header">
                     <h2 className="tactical-tag-title" key={secaoVisorExibida}>
-                      {secaoVisorExibida === 1 && "RECURSOS TECNOLÓGICOS DO SISTEMA"}
-                      {secaoVisorExibida === 2 && "SUSTENTABILIDADE ESPACIAL & IMPACTO PLANETÁRIO"}
-                      {secaoVisorExibida === 3 && "GLOSSÁRIO ASTRODINÂMICO DIDÁTICO"}
+                      {secaoVisorExibida === 1 && "SOBRE O PROJETO & DIRETRIZES DO SISTEMA"}
+                      {secaoVisorExibida === 2 && "RECURSOS TECNOLÓGICOS DO SISTEMA"}
+                      {secaoVisorExibida === 3 && "SUSTENTABILIDADE ESPACIAL & IMPACTO PLANETÁRIO"}
+                      {secaoVisorExibida === 4 && "GLOSSÁRIO ASTRODINÂMICO DIDÁTICO"}
                     </h2>
                   </div>
 
                   {/* Corpo do Visor Aberto com Conteúdo Reativo */}
                   <div className={`tactical-visor-body ${emTransicao ? 'em-transicao' : ''}`} key={secaoVisorExibida}>
-                  {secaoVisorExibida === 1 && (
-                    <div className="tactical-features-container">
-                      <div className="tactical-features-grid">
-                        <div className="tactical-feature-card">
-                          <h3 className="tactical-feature-title">Telemetria Física em Tempo Real</h3>
-                          <p>
-                            Propagação orbital vetorial de alta precisão baseada no modelo matemático SGP4/SDP4 (Simplified General Perturbations) convertido para o referencial geodésico WGS84 diretamente no cliente.
-                          </p>
-                          <ul className="tactical-feature-specs">
-                            <li>
-                              <span className="spec-dot"></span>
-                              <span><strong>Dinâmica Orbital:</strong> Altitude, velocidade instantânea (km/h e km/s) e período contínuo.</span>
-                            </li>
-                            <li>
-                              <span className="spec-dot"></span>
-                              <span><strong>Regimes Orbitais:</strong> Classificação em LEO (baixa), MEO (média) e GEO (geoestacionária).</span>
-                            </li>
-                            <li>
-                              <span className="spec-dot"></span>
-                              <span><strong>Efemérides Vetoriais:</strong> Cálculo em tempo real de apogeu, perigeu, inclinação e excentricidade.</span>
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="tactical-feature-card">
-                          <h3 className="tactical-feature-title">Trajeto Orbital Interativo</h3>
-                          <p>
-                            Motor 3D geoespacial em WebGL com projeção contínua de elipses de trajetória ao passar o cursor e travamento cinemático instantâneo ao selecionar qualquer satélite do catálogo.
-                          </p>
-                          <ul className="tactical-feature-specs">
-                            <li>
-                              <span className="spec-dot"></span>
-                              <span><strong>Traçado Dinâmico:</strong> Visualização da órbita completa em elipse tridimensional no espaço sem travamentos.</span>
-                            </li>
-                            <li>
-                              <span className="spec-dot"></span>
-                              <span><strong>Câmera Tática de Foco:</strong> Interpolação suave de foco com rotação livre e rastreio axial da Terra.</span>
-                            </li>
-                            <li>
-                              <span className="spec-dot"></span>
-                              <span><strong>Dossiê Factual:</strong> Identificação de nação operadora, data de lançamento e papel aeroespacial.</span>
-                            </li>
-                          </ul>
-                        </div>
-
-                        <div className="tactical-feature-card">
-                          <h3 className="tactical-feature-title">Diagnóstico de Sustentabilidade</h3>
-                          <p>
-                            Mecanismo analítico para mensurar os riscos de detritos espaciais, colapsos em cascata na órbita baixa e o impacto físico de reentradas não controladas.
-                          </p>
-                          <ul className="tactical-feature-specs">
-                            <li>
-                              <span className="spec-dot"></span>
-                              <span><strong>Síndrome de Kessler:</strong> Monitoramento de densidade crítica orbital entre 700 e 1.000 km de altitude.</span>
-                            </li>
-                            <li>
-                              <span className="spec-dot"></span>
-                              <span><strong>Reentrada Atmosférica:</strong> Estimativa de sobrevivência de massa ao solo e queima térmica aeroespacial.</span>
-                            </li>
-                            <li>
-                              <span className="spec-dot"></span>
-                              <span><strong>Camada de Ozônio e Clima:</strong> Rastreio de subprodutos de queima e aprisionamento magnético na magnetosfera.</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-
-                      {/* CARTÃO FULL-WIDTH: STACK TECNOLÓGICA COMPLETA DO SISTEMA */}
-                      <div className="tactical-stack-card">
-                        <div className="tactical-stack-header">
-                          <div className="stack-header-left">
-                            <Cpu size={18} className="stack-icon" />
-                            <h3 className="tactical-stack-title">ARQUITETURA & STACK TECNOLÓGICA DO PROJETO</h3>
-                          </div>
-                          <span className="tactical-stack-badge">SISTEMA FULL-STACK INTEGRADO</span>
-                        </div>
-
-                        <div className="tactical-stack-grid">
-                          <div className="stack-category-pod">
-                            <div className="pod-header">
-                              <span className="pod-indicator pod-cyan"></span>
-                              <h4 className="pod-title">FRONTEND & MOTOR 3D</h4>
+                    {secaoVisorExibida === 1 && (
+                      <div className="tactical-about-container">
+                        <div className="tactical-about-grid">
+                          <div className="tactical-about-card">
+                            <div className="about-card-header">
+                              <div className="about-icon-box about-icon-cyan">
+                                <Globe size={18} />
+                              </div>
+                              <h3 className="about-card-title">Missão & Propósito Pedagógico</h3>
                             </div>
-                            <div className="tech-tags-list">
-                              <span className="tech-tag">React 19</span>
-                              <span className="tech-tag">Vite 8</span>
-                              <span className="tech-tag">CesiumJS (WebGL / WGS84)</span>
-                              <span className="tech-tag">Satellite.js (SGP4/SDP4)</span>
-                              <span className="tech-tag">Lucide Icons</span>
-                            </div>
-                            <p className="pod-desc">Interface reativa de alto desempenho, renderização geoespacial 3D e cálculo vetorial propagado no navegador.</p>
+                            <p className="about-card-lead">
+                              O <strong>OrbitalED</strong> foi concebido para transformar dados aeroespaciais brutos em uma experiência viva de aprendizado visual, interativo e intuitivo.
+                            </p>
+                            <ul className="about-card-list">
+                              <li>
+                                <span className="about-list-dot"></span>
+                                <span><strong>Democratização Científica:</strong> Elimina a abstração matemática através de visualização orbital 3D vetorial em tempo real.</span>
+                              </li>
+                              <li>
+                                <span className="about-list-dot"></span>
+                                <span><strong>Consciência Planetária:</strong> Evidencia a urgência na mitigação de detritos e na sustentabilidade do tráfego espacial na órbita terrestre baixa.</span>
+                              </li>
+                            </ul>
                           </div>
 
-                          <div className="stack-category-pod">
-                            <div className="pod-header">
-                              <span className="pod-indicator pod-amber"></span>
-                              <h4 className="pod-title">BACKEND & APIs</h4>
+                          <div className="tactical-about-card highlight-card">
+                            <div className="about-card-header">
+                              <div className="about-icon-box about-icon-amber">
+                                <Database size={18} />
+                              </div>
+                              <h3 className="about-card-title">Censo Global vs. Telemetria Ativa</h3>
                             </div>
-                            <div className="tech-tags-list">
-                              <span className="tech-tag">Python 3.11</span>
-                              <span className="tech-tag">FastAPI</span>
-                              <span className="tech-tag">Uvicorn (ASGI)</span>
-                              <span className="tech-tag">APScheduler</span>
-                              <span className="tech-tag">HTTPX Async</span>
-                            </div>
-                            <p className="pod-desc">API REST assíncrona de baixa latência, responsável pela ingestão de catálogos e orquestração de tarefas em background.</p>
+                            <p className="about-card-lead">
+                              O sistema opera em uma estrutura de dados de 3 camadas com propósitos e calibragens complementares:
+                            </p>
+                            <ul className="about-card-list">
+                              <li>
+                                <span className="about-list-dot"></span>
+                                <span><strong>Censo Geral (35.000+ Objetos):</strong> Todo objeto rastreado por radar militar (&gt;10 cm), incluindo mais de 15.000 fragmentos anônimos sem telemetria operacional.</span>
+                              </li>
+                              <li>
+                                <span className="about-list-dot"></span>
+                                <span><strong>Dossiê Local (~6.300 Objetos):</strong> O banco de dados indexa apenas satélites e detritos históricos com dados ricos, identificação, operadora e função educacional.</span>
+                              </li>
+                              <li>
+                                <span className="about-list-dot"></span>
+                                <span><strong>Simulação 3D (1.000 Objetos):</strong> Amostragem vetorial calculada instantaneamente a 60 FPS via SGP4 no navegador para máxima fluidez.</span>
+                              </li>
+                            </ul>
                           </div>
 
-                          <div className="stack-category-pod">
-                            <div className="pod-header">
-                              <span className="pod-indicator pod-purple"></span>
-                              <h4 className="pod-title">DADOS & ASTRODINÂMICA</h4>
+                          <div className="tactical-about-card">
+                            <div className="about-card-header">
+                              <div className="about-icon-box about-icon-cyan">
+                                <Layers size={18} />
+                              </div>
+                              <h3 className="about-card-title">Fontes de Dados & Credibilidade</h3>
                             </div>
-                            <div className="tech-tags-list">
-                              <span className="tech-tag">PostgreSQL 16</span>
-                              <span className="tech-tag">SQLAlchemy 2.0</span>
-                              <span className="tech-tag">Asyncpg</span>
-                              <span className="tech-tag">CelesTrak / Space-Track</span>
-                              <span className="tech-tag">Modelagem TLE</span>
-                            </div>
-                            <p className="pod-desc">Persistência relacional de efemérides com sincronização contínua de catálogos orbitais oficiais do USSPACECOM/NORAD.</p>
+                            <p className="about-card-lead">
+                              O projeto é fundamentado em dados astronômicos oficiais e públicos da comunidade aeroespacial internacional:
+                            </p>
+                            <ul className="about-card-list">
+                              <li>
+                                <span className="about-list-dot"></span>
+                                <span><strong>CelesTrak / Dr. T.S. Kelso:</strong> Distribuição de TLEs (Two-Line Elements — formato internacional em duas linhas com as coordenadas para calcular a órbita exata de qualquer objeto).</span>
+                              </li>
+                              <li>
+                                <span className="about-list-dot"></span>
+                                <span><strong>Space-Track / US Space Force:</strong> Catálogo SATCAT gerado pela rede de radares do 18th Space Defense Squadron.</span>
+                              </li>
+                              <li>
+                                <span className="about-list-dot"></span>
+                                <span><strong>NASA ODPO & ESA:</strong> Modelos e métricas de impacto ambiental, Síndrome de Kessler e descarte controlado de cargas.</span>
+                              </li>
+                            </ul>
                           </div>
+                        </div>
 
-                          <div className="stack-category-pod">
-                            <div className="pod-header">
-                              <span className="pod-indicator pod-green"></span>
-                              <h4 className="pod-title">DEVOPS & INFRAESTRUTURA</h4>
-                            </div>
-                            <div className="tech-tags-list">
-                              <span className="tech-tag">Docker</span>
-                              <span className="tech-tag">Docker Compose</span>
-                              <span className="tech-tag">Nginx Reverse Proxy</span>
-                              <span className="tech-tag">Healthchecks</span>
-                              <span className="tech-tag">Volumes Persistentes</span>
-                            </div>
-                            <p className="pod-desc">Arquitetura modular conteinerizada com isolamento de serviços, rede interna dedicada e alta reprodutibilidade.</p>
+                        {/* Barra Inferior com Métricas Chave do Projeto */}
+                        <div className="tactical-about-metrics-bar">
+                          <div className="about-metric-item">
+                            <span className="about-metric-val">35.000+</span>
+                            <span className="about-metric-lbl">Censo Global em Órbita</span>
+                            <span className="about-metric-sub">Rastreado por Radar Terrestre</span>
+                          </div>
+                          <div className="about-metric-divider"></div>
+                          <div className="about-metric-item">
+                            <span className="about-metric-val">~6.300</span>
+                            <span className="about-metric-lbl">Objetos no Banco Local</span>
+                            <span className="about-metric-sub">Com Dossiê e TLE Completo</span>
+                          </div>
+                          <div className="about-metric-divider"></div>
+                          <div className="about-metric-item">
+                            <span className="about-metric-val">1.000</span>
+                            <span className="about-metric-lbl">Propagação SGP4 3D</span>
+                            <span className="about-metric-sub">Amostragem em Tempo Real a 60 FPS</span>
+                          </div>
+                          <div className="about-metric-divider"></div>
+                          <div className="about-metric-item">
+                            <span className="about-metric-val">100%</span>
+                            <span className="about-metric-lbl">Dados Reais e Factual</span>
+                            <span className="about-metric-sub">Alinhado a Padrões NORAD</span>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {secaoVisorExibida === 2 && (
-                    <div className="tactical-sustainability-section">
-                      <div className="tactical-pillars-grid">
-                        <div className="tactical-pillar-card">
-                          <div className="tactical-pillar-top">
-                            <ShieldAlert size={16} className="pillar-ico-kessler" />
-                            <h4>{DADOS_SUSTENTABILIDADE.kessler.titulo}</h4>
+                    {secaoVisorExibida === 2 && (
+                      <div className="tactical-features-container">
+                        <div className="tactical-features-grid">
+                          <div className="tactical-feature-card">
+                            <div className="feature-card-header">
+                              <div className="about-icon-box about-icon-cyan">
+                                <Compass size={18} />
+                              </div>
+                              <h3 className="tactical-feature-title">Trajetória Orbital Interativa</h3>
+                            </div>
+                            <p>
+                              Renderização tridimensional fluida em WebGL com projeção contínua de elipses de trajetória e câmera inteligente que viaja junto com o satélite.
+                            </p>
+                            <ul className="tactical-feature-specs">
+                              <li>
+                                <span className="spec-dot"></span>
+                                <span><strong>Traçado sob o Cursor:</strong> Passe o mouse sobre qualquer objeto para visualizar o desenho de sua órbita completa no espaço.</span>
+                              </li>
+                              <li>
+                                <span className="spec-dot"></span>
+                                <span><strong>Câmera de Perseguição:</strong> Clique no satélite para travar a visão e acompanhar sua rotação em sincronia com a Terra.</span>
+                              </li>
+                              <li>
+                                <span className="spec-dot"></span>
+                                <span><strong>Visão Panorâmica:</strong> Rotacione o planeta livremente para compreender a densidade de objetos e constelações.</span>
+                              </li>
+                            </ul>
                           </div>
-                          <p>{DADOS_SUSTENTABILIDADE.kessler.fatoChave}</p>
-                          <span className="tactical-stat-tag">{DADOS_SUSTENTABILIDADE.kessler.densidadeCriticaFaixa}</span>
+
+                          <div className="tactical-feature-card highlight-green">
+                            <div className="feature-card-header">
+                              <div className="about-icon-box about-icon-green">
+                                <Activity size={18} />
+                              </div>
+                              <h3 className="tactical-feature-title">Telemetria Física em Tempo Real</h3>
+                            </div>
+                            <p>
+                              Cálculo contínuo da posição exata de cada satélite via modelo astrodinâmico SGP4, projetando altitude, velocidade e coordenadas diretamente sobre o globo 3D da Terra.
+                            </p>
+                            <ul className="tactical-feature-specs">
+                              <li>
+                                <span className="spec-dot"></span>
+                                <span><strong>Dinâmica Orbital:</strong> Altitude em quilômetros, velocidade instantânea (km/h e km/s) e tempo para completar uma volta.</span>
+                              </li>
+                              <li>
+                                <span className="spec-dot"></span>
+                                <span><strong>Regimes Orbitais:</strong> Classificação didática em LEO (órbita baixa), MEO (média) e GEO (geoestacionária).</span>
+                              </li>
+                              <li>
+                                <span className="spec-dot"></span>
+                                <span><strong>Pontos Críticos:</strong> Apogeu (ponto mais alto), perigeu (ponto mais baixo) e ângulo de inclinação do satélite.</span>
+                              </li>
+                            </ul>
+                          </div>
+
+                          <div className="tactical-feature-card">
+                            <div className="feature-card-header">
+                              <div className="about-icon-box about-icon-cyan">
+                                <BookOpen size={18} />
+                              </div>
+                              <h3 className="tactical-feature-title">Dossiês Fatuais & Busca Tática</h3>
+                            </div>
+                            <p>
+                              Enciclopédia orbital integrada que conecta cada ponto luminoso à sua história real, com busca por nome ou código NORAD e filtros por categoria.
+                            </p>
+                            <ul className="tactical-feature-specs">
+                              <li>
+                                <span className="spec-dot"></span>
+                                <span><strong>Busca Instantânea:</strong> Localize qualquer objeto pelo nome (ex: Hubble, ISS, Starlink) ou pelo número oficial NORAD.</span>
+                              </li>
+                              <li>
+                                <span className="spec-dot"></span>
+                                <span><strong>Dossiê Pedagógico:</strong> País de origem, ano de lançamento, objetivo da missão e relevância na exploração espacial.</span>
+                              </li>
+                              <li>
+                                <span className="spec-dot"></span>
+                                <span><strong>Filtros por Categoria:</strong> Isole satélites ativos, desativados, detritos perigosos ou estações espaciais habitadas.</span>
+                              </li>
+                            </ul>
+                          </div>
                         </div>
 
-                        <div className="tactical-pillar-card">
-                          <div className="tactical-pillar-top">
-                            <Flame size={16} className="pillar-ico-reentry" />
-                            <h4>{DADOS_SUSTENTABILIDADE.reentrada.titulo}</h4>
+                        {/* CARTÃO FULL-WIDTH: STACK TECNOLÓGICA COMPLETA DO SISTEMA */}
+                        <div className="tactical-stack-card">
+                          <div className="tactical-stack-header">
+                            <div className="stack-header-left">
+                              <Cpu size={18} className="stack-icon" />
+                              <h3 className="tactical-stack-title">ARQUITETURA & STACK TECNOLÓGICA DO PROJETO</h3>
+                            </div>
+                            <span className="tactical-stack-badge">SISTEMA FULL-STACK INTEGRADO</span>
                           </div>
-                          <p>{DADOS_SUSTENTABILIDADE.reentrada.fatoChave}</p>
-                          <span className="tactical-stat-tag">Sobrevivência: {DADOS_SUSTENTABILIDADE.reentrada.sobrevivenciaPercentual}</span>
-                        </div>
 
-                        <div className="tactical-pillar-card">
-                          <div className="tactical-pillar-top">
-                            <Zap size={16} className="pillar-ico-magneto" />
-                            <h4>{DADOS_SUSTENTABILIDADE.magnetosfera.titulo}</h4>
-                          </div>
-                          <p>{DADOS_SUSTENTABILIDADE.magnetosfera.mecanismo}</p>
-                          <span className="tactical-stat-tag">Ref: {DADOS_SUSTENTABILIDADE.magnetosfera.pesquisaReferencia}</span>
-                        </div>
+                          <div className="tactical-stack-grid">
+                            <div className="stack-category-pod">
+                              <div className="pod-header">
+                                <span className="pod-indicator pod-cyan"></span>
+                                <h4 className="pod-title">FRONTEND & MOTOR 3D</h4>
+                              </div>
+                              <div className="tech-tags-list">
+                                <span className="tech-tag">React 19</span>
+                                <span className="tech-tag">Vite 8</span>
+                                <span className="tech-tag">CesiumJS (WebGL / WGS84)</span>
+                                <span className="tech-tag">Satellite.js (SGP4/SDP4)</span>
+                                <span className="tech-tag">Lucide Icons</span>
+                              </div>
+                              <p className="pod-desc">Interface reativa de alto desempenho, renderização geoespacial 3D e cálculo vetorial propagado no navegador.</p>
+                            </div>
 
-                        <div className="tactical-pillar-card">
-                          <div className="tactical-pillar-top">
-                            <Wind size={16} className="pillar-ico-climate" />
-                            <h4>{DADOS_SUSTENTABILIDADE.climaEOzonio.titulo}</h4>
+                            <div className="stack-category-pod">
+                              <div className="pod-header">
+                                <span className="pod-indicator pod-amber"></span>
+                                <h4 className="pod-title">BACKEND & APIs</h4>
+                              </div>
+                              <div className="tech-tags-list">
+                                <span className="tech-tag">Python 3.11</span>
+                                <span className="tech-tag">FastAPI</span>
+                                <span className="tech-tag">Uvicorn (ASGI)</span>
+                                <span className="tech-tag">APScheduler</span>
+                                <span className="tech-tag">HTTPX Async</span>
+                              </div>
+                              <p className="pod-desc">API REST assíncrona de baixa latência, responsável pela ingestão de catálogos e orquestração de tarefas em background.</p>
+                            </div>
+
+                            <div className="stack-category-pod">
+                              <div className="pod-header">
+                                <span className="pod-indicator pod-purple"></span>
+                                <h4 className="pod-title">DADOS & ASTRODINÂMICA</h4>
+                              </div>
+                              <div className="tech-tags-list">
+                                <span className="tech-tag">PostgreSQL 16</span>
+                                <span className="tech-tag">SQLAlchemy 2.0</span>
+                                <span className="tech-tag">Asyncpg</span>
+                                <span className="tech-tag">CelesTrak / Space-Track</span>
+                                <span className="tech-tag">Modelagem TLE</span>
+                              </div>
+                              <p className="pod-desc">Persistência relacional de efemérides com sincronização contínua de catálogos orbitais oficiais do USSPACECOM/NORAD.</p>
+                            </div>
+
+                            <div className="stack-category-pod">
+                              <div className="pod-header">
+                                <span className="pod-indicator pod-green"></span>
+                                <h4 className="pod-title">DEVOPS & INFRAESTRUTURA</h4>
+                              </div>
+                              <div className="tech-tags-list">
+                                <span className="tech-tag">Docker</span>
+                                <span className="tech-tag">Docker Compose</span>
+                                <span className="tech-tag">Nginx Reverse Proxy</span>
+                                <span className="tech-tag">Healthchecks</span>
+                                <span className="tech-tag">Volumes Persistentes</span>
+                              </div>
+                              <p className="pod-desc">Arquitetura modular conteinerizada com isolamento de serviços, rede interna dedicada e alta reprodutibilidade.</p>
+                            </div>
                           </div>
-                          <p>{DADOS_SUSTENTABILIDADE.climaEOzonio.fatoChave}</p>
-                          <span className="tactical-stat-tag">Catalisador: Al2O3 Estratosférico</span>
                         </div>
                       </div>
+                    )}
 
-                      <div className="tactical-table-box">
-                        <div className="tactical-table-header">
-                          <div className="tactical-table-title-group">
-                            <AlertTriangle size={14} className="tactical-table-icon" />
-                            <span>CENSO DE RESPONSABILIDADE GEOPOLÍTICA E DETRITOS CATALOGADOS</span>
+                    {secaoVisorExibida === 3 && (
+                      <div className="tactical-sustainability-section">
+                        <div className="sustainability-pillars-grid">
+                          <div className="sustainability-card card-kessler">
+                            <div className="s-card-title-group">
+                              <div className="s-icon-box s-icon-kessler">
+                                <ShieldAlert size={18} />
+                              </div>
+                              <h4 className="s-card-title">{DADOS_SUSTENTABILIDADE.kessler.titulo}</h4>
+                            </div>
+                            <p className="s-card-text">{DADOS_SUSTENTABILIDADE.kessler.fatoChave}</p>
+                            <span className="s-stat-badge badge-kessler">{DADOS_SUSTENTABILIDADE.kessler.densidadeCriticaFaixa}</span>
+                            <div className="s-card-subtext-box">
+                              <span className="s-subtext-dot dot-red"></span>
+                              <p className="s-card-subtext">{DADOS_SUSTENTABILIDADE.kessler.historicoImpacto}</p>
+                            </div>
                           </div>
-                          <span className="tactical-table-source">CATÁLOGO NORAD SPACE-TRACK / NASA ODPO</span>
-                        </div>
-                        <table className="tactical-table">
-                          <thead>
-                            <tr>
-                              <th className="th-nation">NAÇÃO / BLOCO</th>
-                              <th className="th-debris">DETRITOS OFICIAIS</th>
-                              <th className="th-inactive">INATIVOS</th>
-                              <th className="th-active">ATIVOS</th>
-                              <th className="th-risk">RISCO AMBIENTAL</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td className="nation-cell"><span className="nation-flag">🇷🇺</span> <span>Rússia</span></td>
-                              <td className="cell-num-debris">605</td>
-                              <td className="cell-num-inactive">142</td>
-                              <td className="cell-num-active">47</td>
-                              <td><span className="risk-badge risk-extreme"><span className="risk-dot"></span>RISCO EXTREMO (KESSLER)</span></td>
-                            </tr>
-                            <tr>
-                              <td className="nation-cell"><span className="nation-flag">🇺🇸</span> <span>Estados Unidos</span></td>
-                              <td className="cell-num-debris">112</td>
-                              <td className="cell-num-inactive">86</td>
-                              <td className="cell-num-active cell-num-highlight">4.850</td>
-                              <td><span className="risk-badge risk-critical"><span className="risk-dot"></span>RISCO CRÍTICO (DENSIDADE)</span></td>
-                            </tr>
-                            <tr>
-                              <td className="nation-cell"><span className="nation-flag">🇨🇳</span> <span>China</span></td>
-                              <td className="cell-num-debris">49</td>
-                              <td className="cell-num-inactive">18</td>
-                              <td className="cell-num-active">329</td>
-                              <td><span className="risk-badge risk-moderate"><span className="risk-dot"></span>RISCO ELEVADO</span></td>
-                            </tr>
-                            <tr>
-                              <td className="nation-cell"><span className="nation-flag">🇪🇺</span> <span>Reino Unido / Europa</span></td>
-                              <td className="cell-num-debris cell-num-zero">0</td>
-                              <td className="cell-num-inactive">6</td>
-                              <td className="cell-num-active">685</td>
-                              <td><span className="risk-badge risk-controlled"><span className="risk-dot"></span>RISCO CONTROLADO</span></td>
-                            </tr>
-                            <tr>
-                              <td className="nation-cell"><span className="nation-flag">🇧🇷</span> <span>Brasil / Outros</span></td>
-                              <td className="cell-num-debris cell-num-zero">0</td>
-                              <td className="cell-num-inactive">5</td>
-                              <td className="cell-num-active">58</td>
-                              <td><span className="risk-badge risk-low"><span className="risk-dot"></span>SUSTENTÁVEL</span></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
 
-                  {secaoVisorExibida === 3 && (
-                    <div className="tactical-glossary-section">
-                      <div className="tactical-glossary-grid">
-                        {GLOSSARIO_ORBITAL.map((categoria, idx) => (
-                          <div key={idx} className="tactical-glossary-group">
-                            <h3 className="tactical-group-title">{categoria.categoria}</h3>
-                            <div className="tactical-terms-grid">
-                              {categoria.itens.map((item, itemIdx) => (
-                                <div key={itemIdx} className="tactical-term-card">
-                                  <div className="tactical-term-header">
-                                    <span className="tactical-term-name">{item.termo}</span>
-                                    <span className="tactical-term-sub">{item.titulo}</span>
+                          <div className="sustainability-card card-reentry">
+                            <div className="s-card-title-group">
+                              <div className="s-icon-box s-icon-reentry">
+                                <Flame size={18} />
+                              </div>
+                              <h4 className="s-card-title">{DADOS_SUSTENTABILIDADE.reentrada.titulo}</h4>
+                            </div>
+                            <p className="s-card-text">{DADOS_SUSTENTABILIDADE.reentrada.fatoChave}</p>
+                            <span className="s-stat-badge badge-reentry">Sobrevivência: {DADOS_SUSTENTABILIDADE.reentrada.sobrevivenciaPercentual}</span>
+                            <div className="s-card-subtext-box">
+                              <span className="s-subtext-dot dot-orange"></span>
+                              <p className="s-card-subtext">{DADOS_SUSTENTABILIDADE.reentrada.zonaDescarte}</p>
+                            </div>
+                          </div>
+
+                          <div className="sustainability-card card-magneto">
+                            <div className="s-card-title-group">
+                              <div className="s-icon-box s-icon-magneto">
+                                <Zap size={18} />
+                              </div>
+                              <h4 className="s-card-title">{DADOS_SUSTENTABILIDADE.magnetosfera.titulo}</h4>
+                            </div>
+                            <p className="s-card-text">{DADOS_SUSTENTABILIDADE.magnetosfera.mecanismo}</p>
+                            <span className="s-stat-badge badge-magneto">Ref: {DADOS_SUSTENTABILIDADE.magnetosfera.pesquisaReferencia}</span>
+                            <div className="s-card-subtext-box">
+                              <span className="s-subtext-dot dot-cyan"></span>
+                              <p className="s-card-subtext">{DADOS_SUSTENTABILIDADE.magnetosfera.riscoCientifico}</p>
+                            </div>
+                          </div>
+
+                          <div className="sustainability-card card-climate">
+                            <div className="s-card-title-group">
+                              <div className="s-icon-box s-icon-climate">
+                                <Wind size={18} />
+                              </div>
+                              <h4 className="s-card-title">{DADOS_SUSTENTABILIDADE.climaEOzonio.titulo}</h4>
+                            </div>
+                            <p className="s-card-text">{DADOS_SUSTENTABILIDADE.climaEOzonio.fatoChave}</p>
+                            <span className="s-stat-badge badge-climate">Catalisador: Al2O3 Estratosférico</span>
+                            <div className="s-card-subtext-box">
+                              <span className="s-subtext-dot dot-purple"></span>
+                              <p className="s-card-subtext">{DADOS_SUSTENTABILIDADE.climaEOzonio.impactoLancamento}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="tactical-table-box">
+                          <div className="tactical-table-header">
+                            <div className="tactical-table-title-group">
+                              <AlertTriangle size={14} className="tactical-table-icon" />
+                              <span>CENSO DE RESPONSABILIDADE GEOPOLÍTICA E DETRITOS CATALOGADOS</span>
+                            </div>
+                            <span className="tactical-table-source">CATÁLOGO NORAD SPACE-TRACK / NASA ODPO</span>
+                          </div>
+                          <table className="tactical-table">
+                            <thead>
+                              <tr>
+                                <th className="th-nation">NAÇÃO / BLOCO</th>
+                                <th className="th-debris">DETRITOS OFICIAIS</th>
+                                <th className="th-inactive">INATIVOS</th>
+                                <th className="th-active">ATIVOS</th>
+                                <th className="th-risk">RISCO AMBIENTAL</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="nation-cell"><span>Rússia</span></td>
+                                <td className="cell-num-debris">4.961</td>
+                                <td className="cell-num-inactive">1.328</td>
+                                <td className="cell-num-active">386</td>
+                                <td><span className="risk-badge risk-extreme"><span className="risk-dot"></span>RISCO EXTREMO (KESSLER)</span></td>
+                              </tr>
+                              <tr>
+                                <td className="nation-cell"><span>Estados Unidos</span></td>
+                                <td className="cell-num-debris">4.686</td>
+                                <td className="cell-num-inactive">853</td>
+                                <td className="cell-num-active cell-num-highlight">12.874</td>
+                                <td><span className="risk-badge risk-critical"><span className="risk-dot"></span>RISCO CRÍTICO (DENSIDADE)</span></td>
+                              </tr>
+                              <tr>
+                                <td className="nation-cell"><span>China</span></td>
+                                <td className="cell-num-debris">4.525</td>
+                                <td className="cell-num-inactive">77</td>
+                                <td className="cell-num-active">1.500</td>
+                                <td><span className="risk-badge risk-moderate"><span className="risk-dot"></span>RISCO ELEVADO</span></td>
+                              </tr>
+                              <tr>
+                                <td className="nation-cell"><span>Reino Unido / Europa</span></td>
+                                <td className="cell-num-debris">539</td>
+                                <td className="cell-num-inactive">189</td>
+                                <td className="cell-num-active">1.033</td>
+                                <td><span className="risk-badge risk-controlled"><span className="risk-dot"></span>RISCO CONTROLADO</span></td>
+                              </tr>
+                              <tr>
+                                <td className="nation-cell"><span>Brasil / Outros</span></td>
+                                <td className="cell-num-debris cell-num-zero">0</td>
+                                <td className="cell-num-inactive">9</td>
+                                <td className="cell-num-active">14</td>
+                                <td><span className="risk-badge risk-low"><span className="risk-dot"></span>SUSTENTÁVEL</span></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <div className="tactical-table-footer">
+                            <Info size={14} className="tactical-table-footer-icon" />
+                            <div className="tactical-table-footer-text">
+                              <span className="tactical-table-footer-highlight">CENSO GLOBAL OFICIAL (35.000+ OBJETOS):</span> Dados consolidados via <strong>SATCAT Boxscore (CelesTrak / Space-Track / 18th Space Defense Squadron - US Space Force)</strong>. Representa a totalidade de objetos catalogados por radar em órbita terrestre.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {secaoVisorExibida === 4 && (
+                      <div className="tactical-glossary-section">
+                        <div className="tactical-glossary-grid">
+                          {GLOSSARIO_ORBITAL.map((categoria, idx) => (
+                            <div key={idx} className="tactical-glossary-group">
+                              <h3 className="tactical-group-title">{categoria.categoria}</h3>
+                              <div className="tactical-terms-grid">
+                                {categoria.itens.map((item, itemIdx) => (
+                                  <div key={itemIdx} className="tactical-term-card">
+                                    <div className="tactical-term-header">
+                                      <span className="tactical-term-name">{item.termo}</span>
+                                      <span className="tactical-term-sub">{item.titulo}</span>
+                                    </div>
+                                    <p className="tactical-term-desc">{item.definicao}</p>
                                   </div>
-                                  <p className="tactical-term-desc">{item.definicao}</p>
-                                </div>
-                              ))}
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   </div>
                 </div>
               </div>
@@ -1406,10 +1583,10 @@ function App() {
 
       )}
 
-      {/* COCKPIT INTERATIVO DO SIMULADOR (HUD OVERLAY) */}
+      {/* CONSOLE INTERATIVO DO SIMULADOR (HUD OVERLAY) */}
       {telaAtiva === 'simulador' && (
         <div className="hud-overlay">
-          
+
           {/* BARRA SUPERIOR (HEADER) */}
           <header className="hud-header">
             <div className="brand-section">
@@ -1424,8 +1601,18 @@ function App() {
 
             {/* BOTÕES CENTRAIS DE FERRAMENTAS AMBIENTAIS NO HUD */}
             <div className="hud-tools-section">
-              <button 
-                type="button" 
+              <button
+                type="button"
+                className={`hud-tool-btn ${modalTutorialAberto ? 'active' : ''}`}
+                onClick={handleAbrirTutorial}
+                title="Abrir Guia Rápido do Operador"
+              >
+                <Compass size={14} />
+                <span>GUIA DO OPERADOR</span>
+              </button>
+
+              <button
+                type="button"
                 className={`hud-tool-btn ${modalSustentabilidadeAberto ? 'active' : ''}`}
                 onClick={handleAbrirSustentabilidade}
               >
@@ -1433,8 +1620,8 @@ function App() {
                 <span>SUSTENTABILIDADE & KESSLER</span>
               </button>
 
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={`hud-tool-btn ${modalGlossarioAberto ? 'active' : ''}`}
                 onClick={handleAbrirGlossario}
               >
@@ -1447,17 +1634,17 @@ function App() {
             <div className="search-section">
               <div className="search-bar-container">
                 <Search size={18} className="search-icon" />
-                <input 
-                  type="text" 
-                  className="search-input" 
+                <input
+                  type="text"
+                  className="search-input"
                   placeholder="BUSCAR SATÉLITE OU NORAD ID..."
                   value={busca}
                   onChange={(e) => setBusca(e.target.value)}
                 />
                 {busca && (
-                  <X 
-                    size={16} 
-                    style={{cursor: 'pointer', color: 'var(--text-muted)'}}
+                  <X
+                    size={16}
+                    style={{ cursor: 'pointer', color: 'var(--text-muted)' }}
                     onClick={() => { setBusca(''); setSugestoes([]); }}
                   />
                 )}
@@ -1466,7 +1653,7 @@ function App() {
               {sugestoes.length > 0 && (
                 <div className="search-suggestions">
                   {sugestoes.map((sat) => (
-                    <div 
+                    <div
                       key={sat.norad_id}
                       className="suggestion-item"
                       onClick={() => {
@@ -1486,7 +1673,7 @@ function App() {
 
           {/* PAINÉIS LATERAIS FLUTUANTES (HUD) */}
           <div className="panels-container">
-            
+
             {/* PAINEL ESQUERDO: MÉTRICAS E FILTROS */}
             <aside className={`hud-panel left-panel ${!painelEsquerdoAberto ? 'collapsed' : ''}`}>
               <div className="panel-header">
@@ -1494,8 +1681,8 @@ function App() {
                   <Database size={16} className="panel-header-icon" />
                   <h2 className="panel-title">Métricas de Órbita</h2>
                 </div>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="hud-toggle-btn-inline"
                   onClick={() => setPainelEsquerdoAberto(false)}
                   title="Recolher Painel"
@@ -1517,14 +1704,14 @@ function App() {
                 {/* Filtros e Legenda das 4 Categorias */}
                 <div className="legend-section">
                   <div className="legend-title">Filtros por Categoria</div>
-                  
+
                   {/* Satélites Ativos */}
-                  <div 
+                  <div
                     className={`legend-item ${categoriasAtivas[1] ? 'active' : ''}`}
                     onClick={() => handleAlternarCategoria(1)}
                   >
                     <div className="legend-info">
-                      <span className="category-dot" style={{backgroundColor: CORES_CATEGORIAS[1]}}></span>
+                      <span className="category-dot" style={{ backgroundColor: CORES_CATEGORIAS[1] }}></span>
                       <span className="category-name">Satélites Ativos</span>
                     </div>
                     <span className="category-count">
@@ -1533,12 +1720,12 @@ function App() {
                   </div>
 
                   {/* Satélites Inativos */}
-                  <div 
+                  <div
                     className={`legend-item ${categoriasAtivas[2] ? 'active' : ''}`}
                     onClick={() => handleAlternarCategoria(2)}
                   >
                     <div className="legend-info">
-                      <span className="category-dot" style={{backgroundColor: CORES_CATEGORIAS[2]}}></span>
+                      <span className="category-dot" style={{ backgroundColor: CORES_CATEGORIAS[2] }}></span>
                       <span className="category-name">Satélites Inativos</span>
                     </div>
                     <span className="category-count">
@@ -1547,12 +1734,12 @@ function App() {
                   </div>
 
                   {/* Detritos Espaciais */}
-                  <div 
+                  <div
                     className={`legend-item ${categoriasAtivas[3] ? 'active' : ''}`}
                     onClick={() => handleAlternarCategoria(3)}
                   >
                     <div className="legend-info">
-                      <span className="category-dot" style={{backgroundColor: CORES_CATEGORIAS[3]}}></span>
+                      <span className="category-dot" style={{ backgroundColor: CORES_CATEGORIAS[3] }}></span>
                       <span className="category-name">Detritos Espaciais</span>
                     </div>
                     <span className="category-count">
@@ -1561,12 +1748,12 @@ function App() {
                   </div>
 
                   {/* Estações Espaciais */}
-                  <div 
+                  <div
                     className={`legend-item ${categoriasAtivas[4] ? 'active' : ''}`}
                     onClick={() => handleAlternarCategoria(4)}
                   >
                     <div className="legend-info">
-                      <span className="category-dot" style={{backgroundColor: CORES_CATEGORIAS[4]}}></span>
+                      <span className="category-dot" style={{ backgroundColor: CORES_CATEGORIAS[4] }}></span>
                       <span className="category-name">Estações Espaciais</span>
                     </div>
                     <span className="category-count">
@@ -1578,7 +1765,7 @@ function App() {
                 {/* DISTRIBUIÇÃO POR REGIME ORBITAL (LEO / MEO / GEO) */}
                 <div className="legend-section regimes-section">
                   <div className="legend-title">Distribuição por Camada Orbital</div>
-                  
+
                   <div className="regime-bar-item">
                     <div className="regime-bar-info">
                       <span className="regime-tag leo-tag">LEO</span>
@@ -1641,8 +1828,8 @@ function App() {
             {/* PAINEL DIREITO: FICHA FACTUAL E TELEMETRIA DIDÁTICA */}
             <aside className={`hud-panel right-panel ${!painelDireitoAberto ? 'collapsed' : ''} ${!satSelecionado ? 'empty-state' : ''}`}>
               <div className="panel-header">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="hud-toggle-btn-inline"
                   onClick={() => setPainelDireitoAberto(false)}
                   title="Recolher Painel"
@@ -1658,7 +1845,7 @@ function App() {
               <div className="panel-content">
                 {satSelecionado ? (
                   <div className="satellite-fiche">
-                    
+
                     {/* Cabeçalho da Ficha */}
                     <div className="fiche-header">
                       <h3 className="sat-title">{satSelecionado.nome}</h3>
@@ -1668,7 +1855,7 @@ function App() {
                     {/* Badge da Categoria Oficial */}
                     <div className="mission-badge-container">
                       <span className="mission-label">CATEGORIA OFICIAL</span>
-                      <div className="mission-badge" style={{ 
+                      <div className="mission-badge" style={{
                         borderColor: CORES_CATEGORIAS[Number(satSelecionado.categoria_id)] || 'var(--neon-green)',
                         color: CORES_CATEGORIAS[Number(satSelecionado.categoria_id)] || 'var(--neon-green)',
                         backgroundColor: `${CORES_CATEGORIAS[Number(satSelecionado.categoria_id)] || '#00ff66'}15`
@@ -1686,8 +1873,8 @@ function App() {
                       <div className="grid-cell">
                         <span className="cell-label">Ano de Lançamento</span>
                         <span className="cell-value">
-                          {satSelecionado.data_lancamento 
-                            ? new Date(satSelecionado.data_lancamento).getFullYear() 
+                          {satSelecionado.data_lancamento
+                            ? new Date(satSelecionado.data_lancamento).getFullYear()
                             : "Histórico"}
                         </span>
                       </div>
@@ -1777,14 +1964,14 @@ function App() {
                     {fichaFactual && (
                       <div className="pedagogic-explanation scrollable-explanation">
                         <div className="explanation-title">
-                          <Zap size={14} style={{color: 'var(--neon-cyan)'}} />
+                          <Zap size={14} style={{ color: 'var(--neon-cyan)' }} />
                           <span>Finalidade & Histórico Científico</span>
                         </div>
                         <p className="explanation-text">{fichaFactual.historia}</p>
-                        
+
                         <div className="fun-fact-section">
                           <div className="fun-fact-title">
-                            <TrendingUp size={12} style={{color: 'var(--neon-cyan)'}} />
+                            <TrendingUp size={12} style={{ color: 'var(--neon-cyan)' }} />
                             <span>Relevância para a Exploração Espacial</span>
                           </div>
                           <p className="fun-fact-text">{fichaFactual.relevancia}</p>
@@ -1793,8 +1980,8 @@ function App() {
                     )}
 
                     {/* Botão de Retorno */}
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="action-button"
                       onClick={handleDesfocarCamera}
                     >
@@ -1805,7 +1992,7 @@ function App() {
                   </div>
                 ) : (
                   <div className="empty-details">
-                    <Globe size={48} className="empty-details-icon" style={{color: 'var(--neon-cyan)'}} />
+                    <Globe size={48} className="empty-details-icon" style={{ color: 'var(--neon-cyan)' }} />
                     <p>
                       Aguardando seleção de objeto orbital...
                       <span className="cursor-blink"></span>
@@ -1819,8 +2006,8 @@ function App() {
 
           {/* GATILHOS FLUTUANTES PARA REABRIR PAINÉIS */}
           {!painelEsquerdoAberto && (
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="hud-trigger-float-btn left-trigger"
               onClick={() => {
                 setPainelEsquerdoAberto(true);
@@ -1834,8 +2021,8 @@ function App() {
           )}
 
           {!painelDireitoAberto && (
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="hud-trigger-float-btn right-trigger"
               onClick={() => {
                 setPainelDireitoAberto(true);
@@ -1848,90 +2035,200 @@ function App() {
             </button>
           )}
 
-          {/* MODAL COCKPIT: MONITOR DE SUSTENTABILIDADE ESPACIAL */}
-          {modalSustentabilidadeAberto && (
-            <div 
-              className={`hud-modal-backdrop ${modalFechando ? 'modal-closing' : 'modal-opening'}`} 
+          {/* MODAL CONSOLE: GUIA TÁTICO DO OPERADOR (TUTORIAL DE ENTRADA) */}
+          {modalTutorialAberto && (
+            <div
+              className={`hud-modal-backdrop ${modalFechando ? 'modal-closing' : 'modal-opening'}`}
               onClick={handleFecharModais}
             >
-              <div className={`hud-modal-card ${modalFechando ? 'card-closing' : 'card-opening'}`} onClick={(e) => e.stopPropagation()}>
+              <div className={`hud-modal-card tutorial-modal-card ${modalFechando ? 'card-closing' : 'card-opening'}`} onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <ShieldAlert size={20} style={{ color: 'var(--neon-red)' }} />
-                    <h3>MONITOR DE SUSTENTABILIDADE ORBITAL & RISCO PLANETÁRIO</h3>
+                    <Compass size={20} style={{ color: 'var(--neon-cyan)' }} />
+                    <h3>BRIEFING DO OPERADOR · PROTOCOLO DE CONTROLE DO CONSOLE</h3>
                   </div>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="modal-close-btn"
                     onClick={handleFecharModais}
+                    title="Fechar Guia"
                   >
                     <X size={18} />
                   </button>
                 </div>
 
-                <div className="modal-body-scrollable">
-                  <div className="sustainability-pillars-grid modal-grid">
-                    <div className="sustainability-card">
-                      <div className="pillar-header">
-                        <ShieldAlert size={18} className="pillar-icon icon-kessler" />
-                        <h4>{DADOS_SUSTENTABILIDADE.kessler.titulo}</h4>
+                <div className="modal-body-scrollable tutorial-body">
+                  <p className="tutorial-intro-lead">
+                    Bem-vindo ao console de telemetria do <strong>OrbitalED</strong>. Abaixo estão os comandos essenciais para explorar e analisar o tráfego orbital da Terra em tempo real:
+                  </p>
+
+                  <div className="tutorial-steps-grid">
+                    <div className="tutorial-step-card">
+                      <div className="step-icon-box">
+                        <MousePointer size={22} className="step-icon cyan" />
                       </div>
-                      <p className="pillar-body">
-                        {DADOS_SUSTENTABILIDADE.kessler.fatoChave}
-                      </p>
-                      <p className="pillar-subtext">
-                        {DADOS_SUSTENTABILIDADE.kessler.historicoImpacto}
+                      <h4 className="step-title">Inspeção Visual (Hover)</h4>
+                      <p className="step-desc">
+                        Passe o cursor sobre qualquer ponto luminoso no espaço para revelar instantaneamente a elipse completa da sua órbita ao redor do planeta.
                       </p>
                     </div>
 
-                    <div className="sustainability-card">
-                      <div className="pillar-header">
-                        <Flame size={18} className="pillar-icon icon-reentry" />
-                        <h4>{DADOS_SUSTENTABILIDADE.reentrada.titulo}</h4>
+                    <div className="tutorial-step-card">
+                      <div className="step-icon-box">
+                        <Crosshair size={22} className="step-icon green" />
                       </div>
-                      <p className="pillar-body">
-                        {DADOS_SUSTENTABILIDADE.reentrada.fatoChave}
-                      </p>
-                      <p className="pillar-subtext">
-                        {DADOS_SUSTENTABILIDADE.reentrada.zonaDescarte}
+                      <h4 className="step-title">Foco & Telemetria 3D</h4>
+                      <p className="step-desc">
+                        Clique em qualquer satélite para travar a câmera de perseguição. O painel lateral direito exibirá o dossiê com país, missão, altitude e velocidade.
                       </p>
                     </div>
 
-                    <div className="sustainability-card">
-                      <div className="pillar-header">
-                        <Zap size={18} className="pillar-icon icon-magneto" />
-                        <h4>{DADOS_SUSTENTABILIDADE.magnetosfera.titulo}</h4>
+                    <div className="tutorial-step-card">
+                      <div className="step-icon-box">
+                        <Search size={22} className="step-icon amber" />
                       </div>
-                      <p className="pillar-body">
-                        {DADOS_SUSTENTABILIDADE.magnetosfera.mecanismo}
-                      </p>
-                      <p className="pillar-subtext">
-                        {DADOS_SUSTENTABILIDADE.magnetosfera.riscoCientifico}
+                      <h4 className="step-title">Busca Global & Filtros</h4>
+                      <p className="step-desc">
+                        Busque qualquer satélite pelo nome ou código NORAD na barra superior, ou utilize os filtros no painel esquerdo para isolar ativos, inativos e detritos.
                       </p>
                     </div>
 
-                    <div className="sustainability-card">
-                      <div className="pillar-header">
-                        <Wind size={18} className="pillar-icon icon-climate" />
-                        <h4>{DADOS_SUSTENTABILIDADE.climaEOzonio.titulo}</h4>
+                    <div className="tutorial-step-card">
+                      <div className="step-icon-box">
+                        <ShieldAlert size={22} className="step-icon red" />
                       </div>
-                      <p className="pillar-body">
-                        {DADOS_SUSTENTABILIDADE.climaEOzonio.fatoChave}
-                      </p>
-                      <p className="pillar-subtext">
-                        {DADOS_SUSTENTABILIDADE.climaEOzonio.impactoLancamento}
+                      <h4 className="step-title">Alertas & Sustentabilidade</h4>
+                      <p className="step-desc">
+                        Consulte o monitor de Sustentabilidade no topo para avaliar o risco de Síndrome de Kessler e acesse o Glossário para decodificar termos astrodinâmicos.
                       </p>
                     </div>
+                  </div>
+
+                  <div className="tutorial-footer-hint">
+                    <span className="tutorial-hint-text">
+                      * Você pode reabrir este briefing quando desejar clicando no botão <strong>GUIA DO OPERADOR</strong> no topo.
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
           )}
 
-          {/* MODAL COCKPIT: GLOSSÁRIO DIDÁTICO */}
+          {/* MODAL CONSOLE: MONITOR DE SUSTENTABILIDADE ESPACIAL */}
+          {modalSustentabilidadeAberto && (
+            <div
+              className={`hud-modal-backdrop ${modalFechando ? 'modal-closing' : 'modal-opening'}`}
+              onClick={handleFecharModais}
+            >
+              <div className={`hud-modal-card sustainability-modal-card ${modalFechando ? 'card-closing' : 'card-opening'}`} onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <ShieldAlert size={20} style={{ color: 'var(--neon-red)' }} />
+                    <h3>MONITOR DE SUSTENTABILIDADE ORBITAL & RISCO PLANETÁRIO</h3>
+                  </div>
+                  <button
+                    type="button"
+                    className="modal-close-btn"
+                    onClick={handleFecharModais}
+                    title="Fechar Monitor"
+                  >
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <div className="modal-body-scrollable sustainability-modal-body">
+                  <p className="sustainability-intro-lead">
+                    Avaliação científica de impacto ambiental orbital baseada em dados da <strong>NASA ODPO</strong> e <strong>ESA</strong>. Monitore os fatores críticos de perturbação antropogênica no espaço circunsterrestre:
+                  </p>
+
+                  <div className="sustainability-pillars-grid">
+                    {/* CARD 1: KESSLER */}
+                    <div className="sustainability-card card-kessler">
+                      <div className="s-card-title-group">
+                        <div className="s-icon-box s-icon-kessler">
+                          <ShieldAlert size={18} />
+                        </div>
+                        <h4 className="s-card-title">{DADOS_SUSTENTABILIDADE.kessler.titulo}</h4>
+                      </div>
+                      <p className="s-card-text">
+                        {DADOS_SUSTENTABILIDADE.kessler.fatoChave}
+                      </p>
+                      <span className="s-stat-badge badge-kessler">{DADOS_SUSTENTABILIDADE.kessler.densidadeCriticaFaixa}</span>
+                      <div className="s-card-subtext-box">
+                        <span className="s-subtext-dot dot-red"></span>
+                        <p className="s-card-subtext">{DADOS_SUSTENTABILIDADE.kessler.historicoImpacto}</p>
+                      </div>
+                    </div>
+
+                    {/* CARD 2: REENTRADA */}
+                    <div className="sustainability-card card-reentry">
+                      <div className="s-card-title-group">
+                        <div className="s-icon-box s-icon-reentry">
+                          <Flame size={18} />
+                        </div>
+                        <h4 className="s-card-title">{DADOS_SUSTENTABILIDADE.reentrada.titulo}</h4>
+                      </div>
+                      <p className="s-card-text">
+                        {DADOS_SUSTENTABILIDADE.reentrada.fatoChave}
+                      </p>
+                      <span className="s-stat-badge badge-reentry">Sobrevivência: {DADOS_SUSTENTABILIDADE.reentrada.sobrevivenciaPercentual}</span>
+                      <div className="s-card-subtext-box">
+                        <span className="s-subtext-dot dot-orange"></span>
+                        <p className="s-card-subtext">{DADOS_SUSTENTABILIDADE.reentrada.zonaDescarte}</p>
+                      </div>
+                    </div>
+
+                    {/* CARD 3: MAGNETOSFERA */}
+                    <div className="sustainability-card card-magneto">
+                      <div className="s-card-title-group">
+                        <div className="s-icon-box s-icon-magneto">
+                          <Zap size={18} />
+                        </div>
+                        <h4 className="s-card-title">{DADOS_SUSTENTABILIDADE.magnetosfera.titulo}</h4>
+                      </div>
+                      <p className="s-card-text">
+                        {DADOS_SUSTENTABILIDADE.magnetosfera.mecanismo}
+                      </p>
+                      <span className="s-stat-badge badge-magneto">Ref: {DADOS_SUSTENTABILIDADE.magnetosfera.pesquisaReferencia}</span>
+                      <div className="s-card-subtext-box">
+                        <span className="s-subtext-dot dot-cyan"></span>
+                        <p className="s-card-subtext">{DADOS_SUSTENTABILIDADE.magnetosfera.riscoCientifico}</p>
+                      </div>
+                    </div>
+
+                    {/* CARD 4: CLIMA E OZÔNIO */}
+                    <div className="sustainability-card card-climate">
+                      <div className="s-card-title-group">
+                        <div className="s-icon-box s-icon-climate">
+                          <Wind size={18} />
+                        </div>
+                        <h4 className="s-card-title">{DADOS_SUSTENTABILIDADE.climaEOzonio.titulo}</h4>
+                      </div>
+                      <p className="s-card-text">
+                        {DADOS_SUSTENTABILIDADE.climaEOzonio.fatoChave}
+                      </p>
+                      <span className="s-stat-badge badge-climate">Catalisador: Al2O3 Estratosférico</span>
+                      <div className="s-card-subtext-box">
+                        <span className="s-subtext-dot dot-purple"></span>
+                        <p className="s-card-subtext">{DADOS_SUSTENTABILIDADE.climaEOzonio.impactoLancamento}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="sustainability-footer-note">
+                    <span className="sustainability-note-text">
+                      * Dados compilados de modelos científicos da <strong>NASA Orbital Debris Program Office</strong>, <strong>ESA Space Debris Office</strong> e literatura peer-reviewed.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* MODAL CONSOLE: GLOSSÁRIO DIDÁTICO */}
           {modalGlossarioAberto && (
-            <div 
-              className={`hud-modal-backdrop ${modalFechando ? 'modal-closing' : 'modal-opening'}`} 
+            <div
+              className={`hud-modal-backdrop ${modalFechando ? 'modal-closing' : 'modal-opening'}`}
               onClick={handleFecharModais}
             >
               <div className={`hud-modal-card ${modalFechando ? 'card-closing' : 'card-opening'}`} onClick={(e) => e.stopPropagation()}>
@@ -1940,8 +2237,8 @@ function App() {
                     <BookOpen size={20} style={{ color: 'var(--neon-cyan)' }} />
                     <h3>GLOSSÁRIO TÉCNICO DE ASTRODINÂMICA</h3>
                   </div>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     className="modal-close-btn"
                     onClick={handleFecharModais}
                   >

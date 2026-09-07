@@ -10,7 +10,7 @@ A aplicação traduz dados orbitais e séries complexas de engenharia espacial e
 
 O **OrbitalED** nasceu com o propósito de democratizar o acesso à mecânica celeste e fomentar a consciência de estudantes e entusiastas. Hoje, milhares de objetos artificiais cruzam o espaço ao redor da Terra em alta velocidade. A teia invisível de tecnologias que mantém o nosso planeta conectado convive com uma densidade alarmante de remanescentes inativos e detritos de colisões passadas.
 
-A plataforma resolve o distanciamento didático através de uma experiência imersiva de cockpit tático neo-futurista de alto impacto visual. Dados orbitais científicos oficiais e públicos do catálogo **NORAD** são propagados diretamente no navegador do usuário, permitindo o aprendizado ativo de altitude, período orbital, país de origem e a história geopolítica de cada objeto, fornecendo um censo real de **mais de 16.300 objetos rastreados no radar**.
+A plataforma resolve o distanciamento didático através de uma experiência imersiva de console tático neo-futurista de alto impacto visual. Dados orbitais científicos oficiais e públicos do catálogo **NORAD** são propagados diretamente no navegador do usuário, permitindo o aprendizado ativo de altitude, período orbital, país de origem e a história geopolítica de cada objeto, fornecendo um censo real de **mais de 16.300 objetos rastreados no radar**.
 
 ---
 
@@ -40,21 +40,21 @@ O ecossistema do **OrbitalED** opera em um fluxo contínuo e automatizado:
 
 ## 🎨 4. Principais Recursos e Interface
 
-O **OrbitalED** foi construído sob uma identidade estética de ficção científica (cockpit de monitoramento espacial), projetada para garantir uma navegação fluida, intuitiva e de alto desempenho:
+O **OrbitalED** foi construído sob uma identidade estética de ficção científica (console de monitoramento espacial), projetada para garantir uma navegação fluida, intuitiva e de alto desempenho:
 
 ### 1. Tela de Boas-Vindas Didática (Welcome Screen)
 *   **Apresentação por Slides:** Uma tela inicial centralizada e dividida em 3 slides de fácil navegação (Apresentação, Objetivos Científicos e Dashboard de Alerta de Lixo Espacial), que introduz o usuário aos conceitos de poluição orbital.
 *   **Transição Fade Holográfica:** Mudança suave de seções acionada por rolagem do mouse ou toques na tela, simulando uma projeção holográfica ativa sem rolagem física de página.
 *   **Navegação Rápida por Dots:** Indicadores circulares na lateral direita mostram o slide ativo e permitem saltar de página com um único clique. O nome do slide selecionado fica sempre visível ao lado do respectivo indicador para facilitar a navegação.
 
-### 2. Cockpit Interativo e Responsivo
+### 2. Console Interativo e Responsivo
 *   **Interface em Vidro:** Painéis laterais translúcidos com visual premium de ficção científica e contornos brilhantes em neon.
 *   **Painéis Colapsáveis:** O usuário conta com um painel de métricas à esquerda e o painel didático à direita. Ambos podem ser recolhidos e reabertos a qualquer momento por meio de botões práticos ou gatilhos flutuantes nas bordas.
 *   **Responsividade Perfeita:** Em celulares e telas menores, os painéis flutuam de forma autônoma e se ajustam perfeitamente ao tamanho útil da tela, sem causar cortes laterais e com total legibilidade dos textos.
 
 ### 3. Dados Científicos Reais e Integridade de Contagens
 *   **Fidelidade com a Realidade:** O simulador exibe dados reais oficiais fornecidos pelas redes de rastreamento. A base opera estritamente com dados de satélites, detritos e estações espaciais reais.
-*   **Sincronismo do Cockpit:** O número de "Objetos no Radar" exibido na barra superior se atualiza dinamicamente e de forma precisa de acordo com os filtros de categorias ativados nas legendas.
+*   **Sincronismo do Console:** O número de "Objetos no Radar" exibido na barra superior se atualiza dinamicamente e de forma precisa de acordo com os filtros de categorias ativados nas legendas.
 
 ### 4. Rastreamento Preciso de Satélites e Evitação de Sobreposições
 *   **Evitação de Sobreposição Visual:** Satélites que compartilham órbitas paralelas ou fragmentos do mesmo impacto são sutilmente dispersados em nuvens estáveis. Isso impede que os pontos fiquem sobrepostos na tela, permitindo que você passe o mouse e clique individualmente em cada objeto com precisão.
