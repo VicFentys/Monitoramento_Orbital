@@ -1,107 +1,98 @@
-# 🛰️ OrbitalED — Monitoramento Orbital & Sustentabilidade Espacial
+# OrbitalED — Monitoramento Orbital & Sustentabilidade Espacial
 
-O **OrbitalED** é uma plataforma interativa voltada à visualização em tempo real de objetos na órbita terrestre, focada em **divulgação científica, educação astrodinâmica e conscientização sobre a sustentabilidade orbital**. 
+O **OrbitalED** é uma plataforma interativa para visualização em tempo real de satélites e detritos na órbita terrestre, focada em divulgação científica, astrodinâmica e conscientização sobre a sustentabilidade espacial e o Efeito Kessler.
 
-A aplicação traduz dados orbitais e séries complexas de engenharia espacial em conhecimento intuitivo, ilustrando visualmente os riscos da poluição espacial e o cenário crítico do **Efeito Kessler** (reação em cadeia de colisões na órbita terrestre).
-
----
-
-## 🌎 1. Visão Geral do Projeto
-
-O **OrbitalED** nasceu com o propósito de democratizar o acesso à mecânica celeste e fomentar a consciência de estudantes e entusiastas. Hoje, milhares de objetos artificiais cruzam o espaço ao redor da Terra em alta velocidade. A teia invisível de tecnologias que mantém o nosso planeta conectado convive com uma densidade alarmante de remanescentes inativos e detritos de colisões passadas.
-
-A plataforma resolve o distanciamento didático através de uma experiência imersiva de console tático neo-futurista de alto impacto visual. Dados orbitais científicos oficiais e públicos do catálogo **NORAD** são propagados diretamente no navegador do usuário, permitindo o aprendizado ativo de altitude, período orbital, país de origem e a história geopolítica de cada objeto, fornecendo um censo real de **mais de 16.300 objetos rastreados no radar**.
+A aplicação traduz séries complexas de mecânica celeste em uma experiência visual intuitiva, permitindo navegar pela órbita terrestre em 3D, analisar telemetria física calculada analiticamente e compreender o impacto do lixo espacial.
 
 ---
 
-## 🛠️ 2. Stack Tecnológica
+## Stack Tecnológica
 
-O sistema utiliza arquitetura multi-container para deploy e desenvolvimento ágil, estruturado com tecnologias modernas:
+O sistema opera sob arquitetura multi-container com serviços orquestrados via Docker Compose:
 
-*   **Backend (FastAPI & Python):** API de alta performance que processa, roteia e gerencia de forma assíncrona a importação dos dados orbitais.
-*   **Banco de Dados (PostgreSQL):** Persistência relacional de satélites, dados TLE históricos e métricas geopolíticas, otimizada com índices para garantir buscas e cargas iniciais em menos de 5 segundos.
-*   **Frontend (React & Vite):** Interface web rica e dinâmica construída em componentes reutilizáveis, garantindo carregamento rápido e HMR instantâneo.
-*   **Motor 3D (CesiumJS & WebGL):** Renderização fotorrealista tridimensional do globo terrestre, atmosfera realística e iluminação solar nativa por aceleração de GPU.
-*   **satellite.js:** Biblioteca no cliente que calcula a posição exata de cada satélite a partir das coordenadas matemáticas TLE a cada frame, poupando processamento do servidor.
-*   **Docker & Docker Compose:** Containerização e unificação de toda a stack em uma rede em ponte integrada, permitindo subir o ecossistema completo em um único comando.
-
----
-
-## 📐 3. Fluxo de Integração de Dados
-
-O ecossistema do **OrbitalED** opera em um fluxo contínuo e automatizado:
-
-1.  **Ingestão de Dados:** O servidor busca e atualiza as strings de dados TLE brutas das APIs públicas oficiais a cada 24 horas.
-2.  **Salvamento em Lote:** O backend trata as leituras e executa a atualização automática no banco relacional PostgreSQL, mantendo registros novos e históricos consistentes em poucos segundos.
-3.  **Exposição de Endpoints:** A API expõe rotas JSON rápidas e documentadas para listagem de satélites e geração de estatísticas geopolíticas de lixo espacial.
-4.  **Propagação e Renderização no Navegador:** O React consome esses dados e os envia ao propagador matemático do cliente. O CesiumJS plota e atualiza a posição do objeto dinamicamente sobre o globo 3D.
+- **Backend (FastAPI & Python 3.11):** API assíncrona de alta performance para ingestão, tratamento e disponibilização dos dados orbitais e agregações estatísticas.
+- **Banco de Dados (PostgreSQL 15):** Persistência relacional otimizada com índices em `norad_id` e `nome` para garantir consultas rápidas sobre o catálogo de satélites, categorias e históricos de TLE.
+- **Frontend (React 19 & Vite):** Interface web moderna e reativa, estruturada sob a estética de console tático espacial (HUD em vidro translúcido).
+- **Motor 3D (CesiumJS & WebGL):** Renderização fotorrealista da Terra com iluminação solar dinâmica, atmosfera e aceleração de hardware.
+- **satellite.js:** Biblioteca no cliente que executa o propagador matemático SGP4 frame a frame a partir de elementos Two-Line Element (TLE), eliminando sobrecarga no servidor.
+- **Docker & Docker Compose:** Containerização de ponta a ponta em rede em ponte unificada para execução rápida com um único comando.
 
 ---
 
-## 🎨 4. Principais Recursos e Interface
+## Fluxo de Integração de Dados
 
-O **OrbitalED** foi construído sob uma identidade estética de ficção científica (console de monitoramento espacial), projetada para garantir uma navegação fluida, intuitiva e de alto desempenho:
-
-### 1. Tela de Boas-Vindas Didática (Welcome Screen)
-*   **Apresentação por Slides:** Uma tela inicial centralizada e dividida em 3 slides de fácil navegação (Apresentação, Objetivos Científicos e Dashboard de Alerta de Lixo Espacial), que introduz o usuário aos conceitos de poluição orbital.
-*   **Transição Fade Holográfica:** Mudança suave de seções acionada por rolagem do mouse ou toques na tela, simulando uma projeção holográfica ativa sem rolagem física de página.
-*   **Navegação Rápida por Dots:** Indicadores circulares na lateral direita mostram o slide ativo e permitem saltar de página com um único clique. O nome do slide selecionado fica sempre visível ao lado do respectivo indicador para facilitar a navegação.
-
-### 2. Console Interativo e Responsivo
-*   **Interface em Vidro:** Painéis laterais translúcidos com visual premium de ficção científica e contornos brilhantes em neon.
-*   **Painéis Colapsáveis:** O usuário conta com um painel de métricas à esquerda e o painel didático à direita. Ambos podem ser recolhidos e reabertos a qualquer momento por meio de botões práticos ou gatilhos flutuantes nas bordas.
-*   **Responsividade Perfeita:** Em celulares e telas menores, os painéis flutuam de forma autônoma e se ajustam perfeitamente ao tamanho útil da tela, sem causar cortes laterais e com total legibilidade dos textos.
-
-### 3. Dados Científicos Reais e Integridade de Contagens
-*   **Fidelidade com a Realidade:** O simulador exibe dados reais oficiais fornecidos pelas redes de rastreamento. A base opera estritamente com dados de satélites, detritos e estações espaciais reais.
-*   **Sincronismo do Console:** O número de "Objetos no Radar" exibido na barra superior se atualiza dinamicamente e de forma precisa de acordo com os filtros de categorias ativados nas legendas.
-
-### 4. Rastreamento Preciso de Satélites e Evitação de Sobreposições
-*   **Evitação de Sobreposição Visual:** Satélites que compartilham órbitas paralelas ou fragmentos do mesmo impacto são sutilmente dispersados em nuvens estáveis. Isso impede que os pontos fiquem sobrepostos na tela, permitindo que você passe o mouse e clique individualmente em cada objeto com precisão.
-*   **Foco Automático de Câmera:** Ao selecionar qualquer objeto na busca ou no mapa, a câmera voa suavemente e enquadra o satélite com aproximação calibrada, mantendo o foco dinâmico enquanto você gira e explora a Terra ao fundo.
+1. **Ingestão:** O servidor processa strings brutas de dados TLE de fontes públicas oficiais (CelesTrak).
+2. **Persistência e Indexação:** O banco relacional armazena os parâmetros físicos, categorias e dados geopolíticos de cada objeto.
+3. **Endpoints REST:** A API FastAPI expõe rotas JSON rápidas e documentadas para consulta, filtros e métricas.
+4. **Propagação e Plotagem no Cliente:** O frontend recebe os dados, aplica amostragem estratificada e propaga matematicamente as coordenadas geodésicas em tempo real sobre o globo 3D.
 
 ---
 
-## 🚀 5. Como Executar o Projeto Localmente
+## Principais Recursos
 
-Com toda a infraestrutura dockerizada, subir o ecossistema completo do **OrbitalED** localmente requer apenas 1 comando, sem a necessidade de instalar manualmente banco de dados PostgreSQL, pacotes Python FastAPI ou pacotes Node.js de frontend.
+- **Globo Terrestre 3D Interativo:** Exploração orbital contínua com rotação livre, aproximação calibrada e acompanhamento automático de câmera sobre o objeto selecionado.
+- **Amostragem Estratificada Inteligente:** Censo com 6.336 objetos rastreados, operando com radar ativo calibrado em 1.000 objetos distribuídos proporcionalmente para manter taxa constante de 60 FPS no navegador.
+- **Recarregar Amostragem:** Botão no painel tático para sortear instantaneamente uma nova amostra a partir do catálogo completo.
+- **Filtros por Categorias:**
+  - Satélites Ativos (`#00ff66` - Verde neon)
+  - Satélites Inativos (`#f59e0b` - Âmbar neon)
+  - Detritos Espaciais (`#ff0055` - Vermelho neon)
+  - Estações Espaciais (`#00f0ff` - Ciano neon)
+- **Filtros por Regimes de Altitude:** Separação por baixa órbita (LEO), órbita média (MEO) e órbita geoestacionária (GEO).
+- **Telemetria e Trilha Orbital:** Cálculo kepleriano analítico exibindo apogeu, perigeu, inclinação, velocidade instantânea, período orbital e projeção da elipse orbital sobre o globo.
+- **Dossiê Histórico e Factual:** Ficha com finalidade operacional, nação responsável, contexto histórico e relevância de cada objeto.
+- **Busca Instantânea:** Pesquisa com autocompletação em tempo real por nome do satélite ou identificador NORAD ID.
+- **Modais Educativos:** Módulos didáticos integrados dedicados à Sustentabilidade Espacial (Efeito Kessler) e Glossário Astrodinâmico.
+
+---
+
+## Como Executar Localmente
 
 ### Pré-requisitos
-*   **Docker** instalado na máquina.
-*   **Docker Compose** instalado.
+- **Docker** e **Docker Compose** instalados na máquina.
 
 ### Passo a Passo
 
-1. **Clonar o Repositório:**
-   ```bash
-   git clone https://github.com/VicFentys/Monitoramento_Orbital.git
-   cd Monitoramento_Orbital
-   ```
+```bash
+# 1. Clonar o repositório
+git clone https://github.com/VicFentys/Monitoramento_Orbital.git
+cd Monitoramento_Orbital
 
-2. **Subir os Contêineres Docker:**
-   Execute o seguinte comando no terminal da raiz do projeto para compilar as imagens e iniciar o ecossistema:
-   ```bash
-   docker-compose up --build
-   ```
+# 2. Subir os contêineres Docker
+docker-compose up --build
+```
 
-3. **Verificação de Inicialização:**
-   O Docker Compose irá criar a rede em ponte, inicializar a base de dados PostgreSQL (`orbital_db`), criar as tabelas e índices relacionais no boot, disparar o backend FastAPI (`orbital_backend`) e compilar a aplicação React em hot-reload (`orbital_frontend`).
+O Docker Compose inicializa o banco de dados PostgreSQL (`orbital_db`), popula as tabelas na primeira execução, sobe a API FastAPI (`orbital_backend`) e compila a aplicação React (`orbital_frontend`).
 
-4. **Acessar os Endereços Locais:**
+### Endereços e Portas
 
-   *   👉 **Frontend (Simulador Principal via Docker):** [http://localhost:3000](http://localhost:3000)
-   *   👉 **Frontend (Desenvolvimento local sem Docker):** [http://localhost:5173](http://localhost:5173)
-   *   👉 **Backend API (Documentação Swagger):** [http://localhost:8000/docs](http://localhost:8000/docs)
-   *   👉 **Banco de Dados Relacional:** `localhost` na porta `5433` (Credenciais: User `orbital_user`, Pass `orbital_password`, DB `orbital_db`).
+| Serviço | Endereço Local | Descrição |
+| :--- | :--- | :--- |
+| **Frontend (Docker)** | [http://localhost:3000](http://localhost:3000) | Simulador principal e console tático 3D |
+| **Frontend (Dev Local)** | [http://localhost:5173](http://localhost:5173) | Vite dev server em modo hot-reload |
+| **Backend API** | [http://localhost:8000/docs](http://localhost:8000/docs) | Documentação Swagger interativa da API |
+| **PostgreSQL** | `localhost:5433` | Banco relacional (`orbital_db` / `orbital_user`) |
 
 ---
 
-## 📊 6. Dados e Credenciais do Sistema
+## Estrutura do Repositório
 
-As tabelas relacionais no Postgres são populadas automaticamente na inicialização com os scripts SQL localizados na pasta `docker/postgres/init.sql`.
-
-*   **Categorias de Objetos:**
-    1.  `Satélite Ativo` (Cor neon verde: `#00ff66`)
-    2.  `Satélite Inativo` (Cor neon cinza: `#888888`)
-    3.  `Detrito Espacial` (Cor neon vermelha: `#ff0055`)
-    4.  `Estação Espacial` (Cor neon ciano: `#00f0ff`)
+```text
+Monitoramento_Orbital/
+├── backend/                  # API FastAPI (Python 3.11)
+│   ├── app/
+│   │   ├── main.py           # Endpoints, regras de negócio e rotinas
+│   │   └── models.py         # Mapeamento ORM das entidades
+│   ├── requirements.txt      # Dependências Python
+│   └── Dockerfile
+├── frontend/                 # Aplicação React 19 + Vite + CesiumJS
+│   ├── src/                  # Console tático, física orbital e enciclopédia
+│   ├── public/               # Assets estáticos
+│   ├── Dockerfile
+│   └── README.md             # Guia específico do frontend
+├── docker/
+│   └── postgres/
+│       └── init.sql          # Esquema relacional e dados iniciais
+├── docker-compose.yml        # Orquestração dos contêineres
+└── README.md                 # Visão geral da plataforma
+```

@@ -40,7 +40,7 @@ export function calcularParametrosOrbitais(linha1, linha2, dataReferencia = new 
         const expoente = parseInt(bstarRaw.slice(-2), 10);
         bstar = mantissa * Math.pow(10, expoente);
       }
-    } catch (e) {
+    } catch {
       bstar = 0;
     }
 
@@ -106,21 +106,27 @@ export function calcularParametrosOrbitais(linha1, linha2, dataReferencia = new 
     }
 
     // 7. Descrição Didática da Inclinação
-    let classeInclinacao = 'Órbita Média';
-    let descricaoInclinacao = `Inclinação de ${inclinacaoGraus.toFixed(1)}° em relação ao plano equatorial terrestre.`;
+    let classeInclinacao = 'Órbita de Média Inclinação';
+    let descricaoInclinacao = 'Trajetória com ângulo intermediário em relação ao equador, cobrindo latitudes médias povoadas da Terra.';
 
     if (inclinacaoGraus >= 85 && inclinacaoGraus <= 95) {
       classeInclinacao = 'Órbita Polar';
-      descricaoInclinacao = `Inclinação de ${inclinacaoGraus.toFixed(1)}°. O satélite cruza os polos Norte e Sul a cada volta, permitindo escanear o planeta inteiro conforme a Terra gira sob sua órbita.`;
+      descricaoInclinacao = 'Cruza os polos Norte e Sul a cada volta, permitindo escanear a superfície do planeta inteiro conforme a Terra gira sob sua rota.';
     } else if (inclinacaoGraus > 95 && inclinacaoGraus <= 105) {
       classeInclinacao = 'Órbita Heliossíncrona (SSO)';
-      descricaoInclinacao = `Inclinação retrógrada de ${inclinacaoGraus.toFixed(1)}°. O plano orbital mantém o mesmo ângulo em relação à luz solar, ideal para satélites de imageamento e clima.`;
+      descricaoInclinacao = 'Trajetória retrógrada cujo plano mantém o mesmo ângulo em relação à luz solar, ideal para satélites de imageamento e monitoramento climático.';
+    } else if (inclinacaoGraus > 105) {
+      classeInclinacao = 'Órbita Retrógrada';
+      descricaoInclinacao = 'Trajetória retrógrada que se desloca no sentido oposto ao movimento natural de rotação da Terra.';
+    } else if (inclinacaoGraus >= 60 && inclinacaoGraus < 85) {
+      classeInclinacao = 'Órbita de Alta Inclinação';
+      descricaoInclinacao = 'Trajetória de ângulo acentuado em relação ao equador, permitindo ampla cobertura de altas latitudes e regiões subpolares.';
     } else if (inclinacaoGraus < 20) {
       classeInclinacao = 'Órbita Quase-Equatorial';
-      descricaoInclinacao = `Inclinação de ${inclinacaoGraus.toFixed(1)}°. A trajetória acompanha a linha do equador da Terra.`;
+      descricaoInclinacao = 'Trajetória de baixo ângulo que acompanha de perto a linha do equador da Terra.';
     } else if (Math.abs(inclinacaoGraus - 51.6) < 2) {
       classeInclinacao = 'Órbita Padrão ISS';
-      descricaoInclinacao = `Inclinação de ${inclinacaoGraus.toFixed(1)}°, histórica da Estação Espacial Internacional, desenhada para permitir lançamentos a partir da Rússia e dos Estados Unidos.`;
+      descricaoInclinacao = 'Ângulo histórico da Estação Espacial Internacional, desenhado para permitir lançamentos e acoplamentos a partir da Rússia e dos Estados Unidos.';
     }
 
     // 8. Diagnóstico de Arrasto Atmosférico e Estimativa de Vida em Órbita

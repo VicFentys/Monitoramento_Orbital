@@ -149,12 +149,14 @@ def listar_objetos(
     limit: int = Query(100, ge=1, le=1500, description="Limite máximo de registros a retornar"),
     categoria_id: Optional[int] = Query(None, description="Filtro opcional por ID da categoria"),
     busca: Optional[str] = Query(None, description="Filtro de texto opcional para Nome ou NORAD ID"),
+    seed: Optional[str] = Query(None, description="Semente ou timestamp para forçar nova amostragem pseudo-aleatória"),
     db: Session = Depends(get_db)
 ):
     """
     Retorna a lista paginada de objetos orbitais contendo a categoria correspondente
     e o seu último registro de TLE correspondente (se disponível), otimizado para evitar N+1 queries (RNF01).
-    Garante que as Estações Espaciais didáticas estejam 100% inclusas no cinturão do simulador.
+    Garante que as Estações Espaciais didáticas estejam 100% inclusas no cinturão do simulador
+    e aplica amostragem estratificada proporcional para manter o céu equilibrado e diversificado.
     """
     try:
         # Definir prioridade de ordenação: prioriza objetos com país identificado (valor 0)
@@ -178,31 +180,45 @@ def listar_objetos(
         cat_estacao = db.query(CategoriaObjeto).filter(CategoriaObjeto.nome == "Estação Espacial").first()
         id_estacao = cat_estacao.id if cat_estacao else 4
 
+        # Query base com outer joins no TLE mais recente
+        query_base = db.query(ObjetoOrbital, TLEHistorico).outerjoin(
+            subq, ObjetoOrbital.id == subq.c.objeto_id
+        ).outerjoin(
+            TLEHistorico,
+            TLEHistorico.id == subq.c.max_id
+        )
+
         # 3. Lógica de amostragem inteligente para a visualização padrão (sem filtros de busca ou categoria)
         if categoria_id is None and not busca:
-            # Query das Estações Espaciais
-            query_estacoes = db.query(ObjetoOrbital, TLEHistorico).outerjoin(
-                subq, ObjetoOrbital.id == subq.c.objeto_id
-            ).outerjoin(
-                TLEHistorico,
-                TLEHistorico.id == subq.c.max_id
-            ).filter(ObjetoOrbital.categoria_id == id_estacao)
+            # 3.1 Estações Espaciais (100% fixas e travadas sempre presentes no cinturão)
+            estacoes = query_base.filter(ObjetoOrbital.categoria_id == id_estacao).all()
             
-            estacoes = query_estacoes.all()
-            
-            # Calcular o limite restante para preencher o cinturão
             saldo = max(0, limit - len(estacoes))
             
-            # Query dos outros objetos priorizando países definidos de forma pseudo-aleatória
-            query_outros = db.query(ObjetoOrbital, TLEHistorico).outerjoin(
-                subq, ObjetoOrbital.id == subq.c.objeto_id
-            ).outerjoin(
-                TLEHistorico,
-                TLEHistorico.id == subq.c.max_id
-            ).filter(ObjetoOrbital.categoria_id != id_estacao)
-            
-            outros = query_outros.order_by(prioridade_pais.asc(), func.random()).offset(skip).limit(saldo).all()
-            results = estacoes + outros
+            # 3.2 Amostragem estratificada proporcional quando o limite for suficiente (ex: 1.000 objetos)
+            if limit >= 300:
+                cota_inativos = min(170, max(20, round(saldo * 0.17))) # ~17% inativos
+                cota_detritos = min(280, max(40, round(saldo * 0.28))) # ~28% detritos
+                cota_ativos = max(0, saldo - cota_inativos - cota_detritos) # ~55% ativos
+
+                inativos = query_base.filter(
+                    ObjetoOrbital.categoria_id == 2
+                ).order_by(prioridade_pais.asc(), func.random()).limit(cota_inativos).all()
+
+                detritos = query_base.filter(
+                    ObjetoOrbital.categoria_id == 3
+                ).order_by(prioridade_pais.asc(), func.random()).limit(cota_detritos).all()
+
+                ativos = query_base.filter(
+                    ObjetoOrbital.categoria_id == 1
+                ).order_by(prioridade_pais.asc(), func.random()).limit(cota_ativos).all()
+
+                results = estacoes + inativos + detritos + ativos
+            else:
+                outros = query_base.filter(
+                    ObjetoOrbital.categoria_id != id_estacao
+                ).order_by(prioridade_pais.asc(), func.random()).offset(skip).limit(saldo).all()
+                results = estacoes + outros
         else:
             # Se houver algum filtro, faz a consulta filtrada padrão priorizando países definidos
             query = db.query(ObjetoOrbital, TLEHistorico).outerjoin(

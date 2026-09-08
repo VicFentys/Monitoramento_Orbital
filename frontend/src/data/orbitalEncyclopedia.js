@@ -121,7 +121,51 @@ export const CATALOGO_HISTORICO = {
   }
 };
 
-// 2. GERADOR FACTUAL DINÂMICO PARA SATÉLITES NÃO LISTADOS NOMINALMENTE
+// 2. DIAGNÓSTICO DO SETOR (MACRO) REATIVO AO FILTRO ATIVO DO PAINEL ESQUERDO
+export const DIAGNOSTICO_SETORES = {
+  1: {
+    titulo: "SATÉLITES ATIVOS",
+    itens: [
+      { rotulo: "Densidade Crítica", desc: "87% operando em Órbita Baixa (LEO)" },
+      { rotulo: "Taxa de Ocupação", desc: "83,7% de satélites funcionais no censo atual" },
+      { rotulo: "Alerta de Tráfego", desc: "Alta densidade de megaconstelações comerciais" }
+    ]
+  },
+  2: {
+    titulo: "SATÉLITES INATIVOS",
+    itens: [
+      { rotulo: "Obsoletos em Órbita", desc: "Carcaças e equipamentos desativados à deriva" },
+      { rotulo: "Risco de Fragmentação", desc: "Baterias e tanques pressurizados residuais" },
+      { rotulo: "Órbitas Cemitério", desc: "Frotas em GEO elevadas a zonas de descarte (>36.000 km)" }
+    ]
+  },
+  3: {
+    titulo: "DETRITOS ESPACIAIS",
+    itens: [
+      { rotulo: "Risco de Impacto", desc: "766 fragmentos sem propulsão ou controle" },
+      { rotulo: "Ponto Crítico", desc: "Concentração máxima entre 700 km e 900 km" },
+      { rotulo: "Dinâmica", desc: "Detritos não manobráveis sujeitos a decaimento natural" }
+    ]
+  },
+  4: {
+    titulo: "BASES TRIPULADAS",
+    itens: [
+      { rotulo: "População Orbital", desc: "Estruturas habitadas continuamente (ISS e Tiangong)" },
+      { rotulo: "Regime de Voo", desc: "~400 km a 420 km de altitude média" },
+      { rotulo: "Manobras Evasivas", desc: "Requerem queima periódica de propulsores contra detritos" }
+    ]
+  },
+  todos: {
+    titulo: "SATÉLITES ATIVOS",
+    itens: [
+      { rotulo: "Densidade Crítica", desc: "87% operando em Órbita Baixa (LEO)" },
+      { rotulo: "Taxa de Ocupação", desc: "83,7% de satélites funcionais no censo atual" },
+      { rotulo: "Alerta de Tráfego", desc: "Alta densidade de megaconstelações comerciais" }
+    ]
+  }
+};
+
+// 3. GERADOR FACTUAL DINÂMICO PARA SATÉLITES NÃO LISTADOS NOMINALMENTE
 export function obterFichaFactual(sat, parametrosOrbitais) {
   if (!sat) return null;
 
@@ -138,61 +182,80 @@ export function obterFichaFactual(sat, parametrosOrbitais) {
       historia: item.historico,
       relevancia: item.relevancia,
       operador: item.operador,
+      contextoMissao: item.finalidade || item.historico,
       fonte: "Catálogo Histórico Oficial de Engenharia Espacial"
     };
   }
 
   // Decodificação factual dinâmica baseada na categoria e nos cálculos físicos
-  let funcao = "Satélite de Telecomunicações e Dados Científicos";
-  let historia = "";
-  let relevancia = "";
+  let funcao;
+  let historia;
+  let relevancia;
+  let contextoMissao;
   let operador = sat.pais || "Internacional";
 
   // Identificação por padrões de nomenclatura oficiais
   if (nome.includes("STARLINK")) {
     funcao = "Comunicação de Banda Larga em Megaconstelação";
     operador = "SpaceX (EUA)";
-    historia = `Satélite integrante da megaconstelação Starlink em órbita baixa (LEO). Projetado com propulsores de íons de criptônio/argônio para manutenção de posição e desorbitação ativa ao final de sua vida útil (3 a 5 anos).`;
-    relevancia = `Representa a nova era de satélites serializados em massa, objeto de intensos debates sobre poluição luminosa astronômica e impacto de queima de alumina na ionosfera.`;
+    contextoMissao = "Satélite de megaconstelação para internet de banda larga em órbita baixa, equipado com propulsão iônica para prevenção de colisões e desorbitação ativa ao fim da vida útil.";
+    historia = `Satélite integrante da megaconstelação Starlink em órbita baixa (LEO). Projetado com propulsores de íons de criptônio/argônio para manutenção de posição e desorbitação ativa.`;
+    relevancia = `Representa a nova era de satélites serializados em massa, objeto de intensos debates sobre tráfego espacial e reflexividade astronômica.`;
   } else if (nome.includes("ONEWEB")) {
     funcao = "Telecomunicações Globais em Órbita Baixa";
     operador = "Eutelsat OneWeb (Reino Unido)";
+    contextoMissao = "Satélite de conectividade global operando a ~1.200 km, com descarte propulsionado obrigatório para evitar permanência de séculos em órbita.";
     historia = `Satélite de comunicações em constelação operando a cerca de 1.200 km de altitude, fornecendo conectividade corporativa e governamental.`;
-    relevancia = `Por operar em altitude mais alta que a Starlink, seus remanescentes exigem descarte propulsionado rigoroso, pois o decaimento natural levaria séculos.`;
+    relevancia = `Por operar em altitude mais alta que a Starlink, seus remanescentes exigem descarte propulsionado rigoroso.`;
   } else if (nome.includes("NOAA") || nome.includes("GOES") || nome.includes("METOP")) {
     funcao = "Monitoramento Meteorológico, Oceânico e Climático";
     operador = "Agências Meteorológicas Globais (NOAA/EUMETSAT)";
-    historia = `Plataforma de sensoriamento remoto dedicada ao rastreamento contínuo de sistemas meteorológicos, tempestades tropicais, cobertura de gelo e temperatura da superfície dos oceanos.`;
-    relevancia = `Fornece dados abertos vitais para modelos climáticos numéricos globais e emissão de alertas precoces de desastres naturais.`;
+    contextoMissao = "Plataforma de observação da Terra dedicada ao rastreamento contínuo de sistemas meteorológicos, tempestades tropicais e apoio a alertas de desastres.";
+    historia = `Plataforma de sensoriamento remoto dedicada ao rastreamento contínuo de sistemas meteorológicos, tempestades tropicais e temperatura dos oceanos.`;
+    relevancia = `Fornece dados abertos vitais para modelos climáticos numéricos globais.`;
   } else if (nome.includes("GALILEO") || nome.includes("GLONASS") || nome.includes("BEIDOU") || nome.includes("GPS") || nome.includes("NAVSTAR")) {
     funcao = "Radionavegação e Cronometria Global (GNSS)";
     operador = "Governo Soberano / Defesa";
-    historia = `Satélite de navegação situado na órbita terrestre média (MEO). Emite sinais de radiofrequência codificados que permitem receptores na superfície calcular latitude, longitude, altitude e tempo com precisão de centímetros.`;
-    relevancia = `Pilar fundamental da navegação civil e militar contemporânea e infraestrutura crítica para a economia global.`;
+    contextoMissao = "Satélite de radionavegação e temporização atômica em órbita média (MEO), transmitindo sinais codificados para geolocalização civil e militar.";
+    historia = `Satélite de navegação situado na órbita terrestre média (MEO). Emite sinais de radiofrequência codificados para cálculo de posição e tempo.`;
+    relevancia = `Pilar fundamental da navegação contemporânea e infraestrutura crítica global.`;
+  } else if (categoriaId === 4 || nome.includes("ISS") || nome.includes("TIANGONG") || nome.includes("ESTACAO")) {
+    funcao = "Estação Espacial Tripulada Permanente";
+    operador = "Cooperação Internacional / Agências";
+    contextoMissao = "Infraestrutura orbital habitada permanentemente em microgravidade, servindo como laboratório de pesquisas científicas e cooperação tecnológica.";
+    historia = `Complexo orbital tripulado com presença humana contínua em órbita baixa da Terra.`;
+    relevancia = `Laboratório único para estudos de medicina espacial, física de fluidos e astrobiologia.`;
   } else if (categoriaId === 3 || nome.includes("DEB") || nome.includes("DEBRIS") || nome.includes("R/B") || nome.includes("STAGE")) {
     funcao = "Detrito Espacial Inerte (Lixo Orbital)";
     operador = sat.pais || "Nação Lançadora Original";
     if (nome.includes("R/B") || nome.includes("ROCKET")) {
-      historia = `Corpo de foguete descartado (estágio superior) que atingiu a velocidade orbital para liberar sua carga útil e permaneceu à deriva no espaço. Estruturas cilíndricas gigantescas desprovidas de controle.`;
-      relevancia = `Constitui uma das maiores fontes potenciais de novos detritos devido ao risco de colisão por sua grande área de seção transversal e risco de explosão de tanques residuais.`;
+      contextoMissao = "Estágio de foguete descartado à deriva sem propulsão ou telemetria, monitorado por radar devido ao risco de colisão e fragmentação.";
+      historia = `Corpo de foguete descartado que atingiu velocidade orbital e permaneceu à deriva no espaço desprovido de controle.`;
+      relevancia = `Constitui uma das maiores fontes potenciais de novos fragmentos por risco de colisão.`;
     } else {
-      historia = `Fragmento metálico remanescente de colisão, explosão espontânea de bateria ou degradação térmica em órbita. Desloca-se a velocidades hipersônicas sem propulsão ou controle de atitude.`;
-      relevancia = `Devido à altíssima velocidade orbital (superior a 27.000 km/h), mesmo pequenos estilhaços possuem energia cinética equivalente a artefatos bélicos explosivos.`;
+      contextoMissao = "Fragmento metálico inerte resultante de colisão ou degradação em órbita, rastreado preventivamente para evitar conjunções catastróficas.";
+      historia = `Fragmento metálico remanescente de colisão ou degradação térmica em órbita, deslocando-se a velocidades hipersônicas sem propulsão.`;
+      relevancia = `Possui energia cinética equivalente a artefatos explosivos devido à velocidade orbital superior a 27.000 km/h.`;
     }
   } else if (categoriaId === 2) {
     funcao = "Satélite Desativado (Inativo em Órbita)";
     operador = sat.pais || "Operador Original";
-    historia = `Satélite que encerrou suas operações funcionais por esgotamento de combustível, falha de bateria ou obsolescência de sistemas, permanecendo em rota passiva.`;
-    relevancia = `Satélites zumbis inativos não respondem a comandos de manobra evasiva, atuando como alvos fixos na teia de riscos da Síndrome de Kessler.`;
+    contextoMissao = "Satélite desativado que encerrou operações funcionais, permanecendo em rota passiva até reentrada atmosférica ou transferência para órbita cemitério.";
+    historia = `Satélite que encerrou suas operações funcionais por esgotamento de combustível ou falha de bateria, permanecendo em rota passiva.`;
+    relevancia = `Satélites inativos não respondem a comandos evasivos, atuando como alvos fixos na teia da Síndrome de Kessler.`;
+  } else if (nome.includes("COSMOS") || nome.includes("USA ") || nome.includes("NROL") || nome.includes("KOSMOS") || nome.includes("YAOGAN")) {
+    funcao = "Carga Útil de Reconhecimento e Defesa";
+    operador = sat.pais || "Defesa Soberana";
+    contextoMissao = "Carga útil militar/reconhecimento em órbita baixa polar ou heliossíncrona, monitorada por rastreamento radar automatizado.";
+    historia = `Plataforma de defesa e sensoriamento governamental em órbita especializada.`;
+    relevancia = `Operação de alta relevância estratégica sob rastreamento pelas redes globais de defesa aeroespacial.`;
   } else {
-    // Fallback genérico puramente factual
     const regime = parametrosOrbitais ? parametrosOrbitais.regimeNome : "Órbita Terrestre";
-    const vel = parametrosOrbitais ? `${parametrosOrbitais.velocidadeKmH.toLocaleString('pt-BR')} km/h` : "Velocidade Orbital";
-    const alt = parametrosOrbitais ? `${parametrosOrbitais.altitudeInstantaneaKm} km` : "Altitude de Voo";
-    
+    const classeInc = parametrosOrbitais ? parametrosOrbitais.classeInclinacao : "Órbita Padrão";
     funcao = `Objeto Operacional em ${regime}`;
-    historia = `Objeto registrado no catálogo oficial NORAD sob identificador #${noradId}, operando em altitude aproximada de ${alt} a uma velocidade de ${vel}. Registrado oficialmente sob responsabilidade de: ${sat.pais || "Registro Internacional"}.`;
-    relevancia = `Dados físicos de trajetória deduzidos diretamente do modelo de propagação matemática SGP4 a partir dos parâmetros orbitais keplerianos.`;
+    contextoMissao = `Plataforma operacional em ${regime} (${classeInc}), monitorada por rastreamento radar automatizado da rede global de vigilância espacial.`;
+    historia = `Plataforma em operação sob responsabilidade de: ${sat.pais || "Registro Internacional"}.`;
+    relevancia = `Trajetória propagada analiticamente em tempo real via modelo matemático SGP4.`;
   }
 
   return {
@@ -200,6 +263,7 @@ export function obterFichaFactual(sat, parametrosOrbitais) {
     funcao,
     historia,
     relevancia,
+    contextoMissao,
     operador,
     fonte: "Catálogo Oficial NORAD / Propagação SGP4"
   };
@@ -208,87 +272,87 @@ export function obterFichaFactual(sat, parametrosOrbitais) {
 // 3. GLOSSÁRIO DIDÁTICO ASTRODINÂMICO (PARA O 4º SLIDE E CONSULTA NO CONSOLE)
 export const GLOSSARIO_ORBITAL = [
   {
-    categoria: "Regimes de Órbita",
+    categoria: "REGIMES DE ÓRBITA",
     itens: [
       {
         termo: "LEO (Low Earth Orbit)",
         titulo: "Órbita Terrestre Baixa",
-        definicao: "Região do espaço com altitudes entre 160 km e 2.000 km acima da superfície terrestre. É onde operam a Estação Espacial Internacional, a maioria dos satélites de observação da Terra e as megaconstelações de internet. Apresenta a maior densidade de objetos e o maior risco de colisões."
+        definicao: "Faixa de 160 km a 2.000 km de altitude. Abriga a Estação Espacial Internacional e constelações de satélites de internet. Por concentrar a maior parte dos objetos espaciais, apresenta o maior risco de colisões."
       },
       {
         termo: "MEO (Medium Earth Orbit)",
         titulo: "Órbita Terrestre Média",
-        definicao: "Faixa orbital situada entre 2.000 km e 35.786 km de altitude. É o domínio tradicional de sistemas globais de radionavegação por satélite, como a constelação americana GPS, a europeia Galileo, a russa Glonass e a chinesa BeiDou."
+        definicao: "Faixa intermediária de 2.000 km a 35.786 km de altitude. Região tradicionalmente utilizada por constelações de navegação e geolocalização global, como GPS, Galileo, Glonass e BeiDou."
       },
       {
         termo: "GEO (Geostationary Earth Orbit)",
         titulo: "Órbita Geoestacionária",
-        definicao: "Órbita circular no plano do equador a exatamente 35.786 km de altitude. O período de translação do satélite é idêntico ao período de rotação da Terra (23h 56min 4s), fazendo com que o objeto pareça absolutamente imóvel no céu para um observador na superfície."
+        definicao: "Órbita circular a 35.786 km de altitude sobre a linha do equador. O satélite acompanha com precisão a rotação da Terra (24 horas), parecendo imóvel no céu para quem observa da superfície."
       },
       {
         termo: "HEO (Highly Elliptical Orbit)",
-        titulo: "Órbita Altamente Elíptica",
-        definicao: "Trajetória não circular com grande excentricidade (como as órbitas russas Molniya). O satélite passa rapidamente perto da Terra no perigeu e passa a maior parte do tempo no apogeu distante, ideal para cobrir regiões de altas latitudes polares."
+        titulo: "Órbita Muito Elíptica",
+        definicao: "Trajetória oval com altitude bastante variável. O satélite passa veloz e próximo da Terra no ponto mais baixo e passa a maior parte do tempo no ponto mais alto, cobrindo regiões polares isoladas."
       }
     ]
   },
   {
-    categoria: "Mecânica Celeste e Engenharia",
+    categoria: "MECÂNICA CELESTE E ENGENHARIA",
     itens: [
       {
         termo: "Perigeu",
         titulo: "Ponto de Maior Proximidade",
-        definicao: "Ponto da órbita elíptica em que o satélite passa mais próximo da superfície da Terra. É onde o objeto atinge sua velocidade orbital máxima devido à maior atração gravitacional."
+        definicao: "Ponto da órbita em que o satélite passa mais perto da superfície terrestre. Sob a maior atração gravitacional do planeta, é onde o objeto desenvolve sua velocidade máxima de deslocamento."
       },
       {
         termo: "Apogeu",
         titulo: "Ponto de Maior Distância",
-        definicao: "Ponto da órbita elíptica em que o objeto está mais afastado do centro da Terra. É onde o satélite viaja com sua velocidade orbital mínima."
+        definicao: "Ponto da órbita em que o satélite atinge a maior distância da superfície terrestre. Longe da atração principal da Terra, é o trecho onde o objeto se move com sua velocidade mínima."
       },
       {
         termo: "Inclinação Orbital",
         titulo: "Ângulo do Plano Orbital",
-        definicao: "Ângulo de inclinação medido em graus entre o plano da órbita do satélite e a linha do equador da Terra. Uma inclinação de 0° é equatorial pura, 90° cruza exatamente os polos (órbita polar) e valores acima de 90° indicam movimento retrógrado."
+        definicao: "Ângulo medido em graus entre o plano da órbita e o equador terrestre. Determina a abrangência do satélite: 0° acompanha o equador, 90° cruza os polos e valores maiores indicam rota invertida."
       },
       {
-        termo: "TLE (Two-Line Element Set)",
-        titulo: "Formato de Dados de Dois Elementos",
-        definicao: "Padrão oficial de codificação em duas linhas de 69 caracteres criado pelo comando aeroespacial norte-americano (NORAD). Contém os coeficientes matemáticos keplerianos instantâneos necessários para calcular a posição e velocidade de qualquer satélite."
+        termo: "TLE (Two-Line Element)",
+        titulo: "Formato de Dados Orbitais",
+        definicao: "Padrão internacional codificado em duas linhas de texto com parâmetros físicos essenciais. Fornece os dados matemáticos necessários para calcular e desenhar a posição de qualquer satélite."
       },
       {
-        termo: "SGP4 (Simplified General Perturbations 4)",
-        titulo: "Modelo Matemático de Propagação",
-        definicao: "Algoritmo analítico de mecânica orbital que computa os efeitos da gravidade não homogênea da Terra (achatamento polar J2 e J3), arrasto atmosférico e perturbações gravitacionais da Lua e do Sol sobre um satélite a partir de um TLE."
+        termo: "SGP4 (Modelo de Propagação)",
+        titulo: "Algoritmo de Cálculo Orbital",
+        definicao: "Modelo matemático analítico que calcula a trajetória real de objetos no espaço. Compensa a gravidade irregular da Terra, a atração da Lua e do Sol e o atrito com as camadas de ar."
       },
       {
         termo: "Termo BSTAR",
-        titulo: "Coeficiente de Arrasto Aerodinâmico",
-        definicao: "Parâmetro do TLE que modela matematicamente como o satélite é freado pelo atrito com a atmosfera superior residual da Terra. Quanto maior o BSTAR, mais rápida é a perda de altitude do objeto ao longo do tempo."
+        titulo: "Atrito com a Atmosfera",
+        definicao: "Parâmetro do TLE que mede o impacto da resistência do ar residual sobre a velocidade do satélite. Quanto maior esse valor, mais rápido o objeto perde altitude e cai rumo ao planeta."
       }
     ]
   },
   {
-    categoria: "Sustentabilidade e Meio Ambiente Espacial",
+    categoria: "SUSTENTABILIDADE E MEIO AMBIENTE ESPACIAL",
     itens: [
       {
         termo: "Síndrome de Kessler",
-        titulo: "Reação em Cadeia de Colisões",
-        definicao: "Teoria científica proposta pelo astrofísico Donald J. Kessler em 1978. Descreve o cenário crítico em que a densidade de objetos em órbita baixa torna colisões inevitáveis; cada impacto gera milhares de novos estilhaços, desencadeando um efeito dominó exponencial que pode inutilizar faixas orbitais inteiras por séculos."
+        titulo: "Reação em Cadeia de Detritos",
+        definicao: "Cenário onde a densidade de objetos e lixo espacial atinge um ponto crítico. Colisões geram milhares de novos fragmentos descontrolados, criando um efeito cascata que pode inutilizar órbitas inteiras por séculos."
       },
       {
-        termo: "Decaimento Orbital & Reentrada",
-        titulo: "Queda Natural na Atmosfera",
-        definicao: "Processo pelo qual o atrito com as moléculas de ar na alta atmosfera reduz progressivamente a energia mecânica do satélite. O objeto perde altitude continuamente até penetrar em camadas densas (50 km a 85 km) a velocidades hipersônicas, sofrendo compressão e atrito com plasma térmico."
+        termo: "Decaimento Orbital",
+        titulo: "Descida e Reentrada Natural",
+        definicao: "Processo gradual em que o atrito contínuo com as partículas de ar reduz a energia do satélite. O objeto perde altitude ao longo dos meses até mergulhar na atmosfera densa e sofrer desintegração térmica."
       },
       {
-        termo: "Poluição por Alumina (Al2O3)",
-        titulo: "Injeção de Nanopartículas Condutoras",
-        definicao: "Subproduto químico resultante da queima de ligas metálicas de alumínio de satélites descartados durante a reentrada atmosférica. Toneladas dessa poeira condutora se depositam na mesosfera e ionosfera, com potencial de degradar a camada de ozônio estratosférica e perturbar correntes elétricas do campo geomagnético da Terra."
+        termo: "Poluição por Alumina",
+        titulo: "Resíduos Metálicos Atmosféricos",
+        definicao: "Poeira química resultante da queima de carcaças de alumínio durante a reentrada de frotas de satélites. As partículas condutoras afetam a camada de ozônio e podem interferir no escudo magnético terrestre."
       },
       {
         termo: "Ponto Nemo",
         titulo: "Cemitério de Naves Espaciais",
-        definicao: "Polo Oceânico de Inacessibilidade no sul do Oceano Pacífico, o local mais distante de qualquer terra habitada em todo o planeta Terra. É a zona de descarte balístico pré-calculada para reentradas controladas de grandes naves e estações espaciais (onde a antiga estação Mir foi desorbitada)."
+        definicao: "Polo oceânico isolado no Pacífico Sul, o local mais distante de qualquer área habitada na Terra. Funciona como zona segura para orientar a queda controlada de satélites desativados e grandes estações espaciais."
       }
     ]
   }
@@ -297,34 +361,31 @@ export const GLOSSARIO_ORBITAL = [
 // 4. METADADOS CIENTÍFICOS PARA O MÓDULO DE SUSTENTABILIDADE E MEIO AMBIENTE
 export const DADOS_SUSTENTABILIDADE = {
   kessler: {
-    titulo: "Síndrome de Kessler & Colisões",
-    subtitulo: "Risco de Reação em Cadeia",
-    artigoBase: "Kessler & Cour-Palais (1978)",
-    densidadeCriticaFaixa: "Faixa Crítica: 750 a 950 km",
-    fatoChave: "A 27.000 km/h, um fragmento de apenas 1 cm tem a energia de uma granada, perfurando qualquer blindagem aeroespacial.",
-    historicoImpacto: "A colisão Iridium-Cosmos (2009) gerou mais de 2.000 fragmentos que até hoje forçam a ISS a manobras evasivas."
+    titulo: "Risco de Colisão",
+    fatoChave: "A 27.000 km/h, um fragmento de apenas 1 cm tem a energia de uma granada, perfurando qualquer blindagem aeroespacial moderna.",
+    densidadeCriticaFaixa: "Faixa Crítica: 750 a 950 km de altitude",
+    historicoImpacto: "A colisão histórica entre os satélites Iridium e Cosmos (2009) gerou mais de 2.000 fragmentos que até hoje forçam a Estação Espacial Internacional a desvios de rota."
   },
   reentrada: {
-    titulo: "Reentrada Atmosférica & Queda",
-    subtitulo: "Sobrevivência Térmica de Detritos",
-    massaAnualReentradaTon: "100 a 200 ton/ano",
-    sobrevivenciaPercentual: "10% a 40% de peças pesadas",
-    fatoChave: "Embora carcaças vaporizem, tanques de titânio e blocos de aço resistem a 2.000°C e colidem com a superfície.",
-    zonaDescarte: "Quedas controladas miram o Ponto Nemo (Pacífico Sul), mas satélites abandonados reentram de forma aleatória."
+    titulo: "Queda na Atmosfera",
+    fatoChave: "Embora fuselagens vaporizem, tanques de titânio e blocos maciços de aço resistem a 2.000 °C e atingem a superfície.",
+    sobrevivenciaPercentual: "Sobrevivência: 10% a 40% de peças pesadas",
+    zonaDescarte: "Quedas controladas miram o Ponto Nemo no Pacífico Sul, mas satélites abandonados e desativados reentram de forma imprevisível sobre o planeta."
   },
   magnetosfera: {
-    titulo: "Perturbação Eletromagnética",
-    subtitulo: "Camada de Nanopartículas Condutoras",
-    pesquisaReferencia: "Solter-Hunt (2024); Murphy et al. (PNAS)",
-    mecanismo: "A queima em massa de megaconstelações injeta toneladas de óxido de alumínio (nanopartículas condutoras) na ionosfera.",
-    riscoCientifico: "Essa concha metálica na alta atmosfera pode interferir nas correntes de Birkeland e no escudo magnético terrestre."
+    titulo: "Interferência Eletromagnética",
+    mecanismo: "A queima contínua de frotas de satélites injeta toneladas de óxido de alumínio e nanopartículas condutoras na alta atmosfera.",
+    dadoConfirmado: "Dado Confirmado: Evidência de metais na estratosfera (PNAS)",
+    hipoteseEstudo: "Hipótese em Estudo: Modelagem de blindagem condutora (arXiv)",
+    riscoCientifico: "Cientistas investigam se essa camada artificial de poeira condutora pode interferir no funcionamento do escudo magnético natural da Terra."
   },
   climaEOzonio: {
-    titulo: "Clima & Camada de Ozônio",
-    subtitulo: "Destruição Química de O3",
-    reacaoQuimica: "Alumina (Al2O3) como catalisador de cloro",
-    fatoChave: "A poeira de alumina catalisa reações de cloro na estratosfera, podendo atrasar a regeneração do ozônio por décadas.",
-    impactoLancamento: "A fuligem fóssil de lançamentos de foguetes permanece anos na alta atmosfera, provocando aquecimento anômalo."
+    titulo: "Danos na Camada de Ozônio",
+    fatoChave: "A poeira de alumínio liberada na queima de satélites catalisa reações de cloro, podendo atrasar a regeneração do ozônio por décadas.",
+    impactoQuimico: "Impacto Químico: Poeira de alumínio e fuligem fóssil",
+    impactoLancamento: "A fuligem liberada pelos motores de foguetes permanece acumulada por anos no topo da atmosfera, intensificando o aquecimento do planeta."
   }
 };
+
+
 
